@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="LinearSum_style.css">
+    <title>Linear Summary</title>
+
+</head>
+<body>
+    <div class="top-bar">
+        <img class="logo" src="logo.png" alto="logo">
+        <ul>
+            <li><a href="TestData.html">Test data</a></li>
+            <li class="dropdown">
+                <a href="#">Linear</a>
+                <ul class="submenu">
+                    <li><a href="LinearCalcs.html">Linear clacs</a></li>
+                    <li><a href="LinearSum.html">Linear Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Polynomials</a>
+                <ul class="submenu">
+                    <li><a href="PolynomialCalcs.html">Polynomials clacs</a></li>
+                    <li><a href="PolynomialSum.html">Polynomials Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Logarithmic</a>
+                <ul class="submenu">
+                    <li><a href="LogarithmicCalc.html">Logarithmic clacs</a></li>
+                    <li><a href="LogarithmicSum.html">Logarithmic Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Exponential</a>
+                <ul class="submenu">
+                    <li><a href="ExponentialCalcs.html">Exponential clacs</a></li>
+                    <li><a href="ExponentialSum.html">Exponential Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Power</a>
+                <ul class="submenu">
+                    <li><a href="PowerCalcs.html">Power clacs</a></li>
+                    <li><a href="PowerSum.html">Power Sum</a></li>
+                </ul>
+            </li>
+           
+            <li class="dropdown">
+                <a href="#">Others</a>
+                <ul class="submenu">
+                    <li><a href="BestModel.html">Best model</a></li>
+                    <li><a href="PredictedValues.html">Predicted value</a></li>
+                    <li><a href="SateTable.html">Stats table</a></li>
+                    <li><a href="Version.html">Version</a></li>
+                </ul>
+            </li>
+           
+        </ul>
+    </div>
+
+    <h1>Linear Summary</h1>
+
+    <!-- Create a table to display the summary -->
+    <table id="linear-summary-table">
+        <thead>
+            <tr>
+                <th>Variable</th>
+                <th>Equation</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows will be added dynamically here -->
+        </tbody>
+    </table>
+
+    
+    <h2>Chart</h2>
+    <div class="chart-container">
+        <canvas id="chart"></canvas>
+    </div>
+    
+
+    <!-- Create a table to display the fields -->
+    <table id="field-table">
+        <thead>
+            <tr>
+                <th>Field</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Facility:</td>
+                <td id="facility-summary"></td>
+            </tr>
+            <tr>
+                <td>Location:</td>
+                <td id="location-summary"></td>
+            </tr>
+            <tr>
+                <td>Emission Unit:</td>
+                <td id="emission-unit-summary"></td>
+            </tr>
+            <tr>
+                <td>Test Dates:</td>
+                <td id="test-dates-summary"></td>
+            </tr>
+            <tr>
+                <td>Emission Limit:</td>
+                <td id="emission-limit-summary"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        const testDataJSON = localStorage.getItem('testData');
+        const squaredYHatDifference = parseFloat(localStorage.getItem('squaredYHatDifference') || 0);
+
+
+        function updateFieldValues() {
+        // Retrieve and display Facility, Location, Emission Unit, and Test Dates
+        if (testDataJSON) {
+            const testData = JSON.parse(testDataJSON);
+
+            // Display Facility, Location, Emission Unit, and Test Dates
+            document.getElementById('facility-summary').textContent += testData.facility;
+            document.getElementById('location-summary').textContent += testData.location;
+            document.getElementById('emission-unit-summary').textContent += testData.emissionUnit;
+            document.getElementById('test-dates-summary').textContent += testData.testDates;
+            document.getElementById('emission-limit-summary').textContent += testData.emissionLimit;
+            
+        
+        }
+    }
+
+
+        // Retrieve x and y values from localStorage
+        const storedXValues = localStorage.getItem('xValues');
+        const storedYValues = localStorage.getItem('yValues');
+
+        // Parse the stored values (they are stored as strings)
+        const xValues = storedXValues ? JSON.parse(storedXValues) : [];
+        const yValues = storedYValues ? JSON.parse(storedYValues) : [];
+
+        
+        // Calculate the required values based on your equations
+        const n = xValues.length;
+        const xAverage = xValues.reduce((sum, x) => sum + x, 0) / n;
+        const yAverage = yValues.reduce((sum, y) => sum + y, 0) / n;
+        let Sxx = 0;
+        let Syy = 0;
+        let Sxy = 0;
+        let squaredYHatDifferenceSum=0;
+
+
+
+        for (let i = 0; i < n; i++) {
+            const xi = xValues[i];
+            const yi = yValues[i];
+            const xiMinusXAverage = xValues[i] - xAverage;
+            const yiMinusYAverage = yValues[i] - yAverage;
+
+            Sxx += xiMinusXAverage * xiMinusXAverage;
+            Syy += yiMinusYAverage * yiMinusYAverage;
+            Sxy += xiMinusXAverage * yiMinusYAverage;
+
+            const b1 = Sxy / Sxx;
+            const b0 = yAverage - b1 * xAverage;
+            const yHat = b0 + b1 * xi;
+            const squaredYHatDifference = (yHat - yi) ** 2;
+            squaredYHatDifferenceSum += squaredYHatDifference;
+
+
+           
+        }
+
+        const b1Li = Sxy / Sxx;
+        const b0Li = yAverage - b1Li * xAverage;
+        const SL = Math.sqrt((1 / (n - 2)) * squaredYHatDifferenceSum);
+        const yHatMean = b0Li + b1Li * xAverage;
+        const tf = 2.228; // You can calculate this value based on your requirements
+        const CI = tf * SL * Math.sqrt(1 / n);
+        const EL = 15.0; // Change this to your Emission Limit
+        const CIPercentage = (CI / EL) * 100;
+        const nPrime = n;
+        const vf = 1.593; // You can calculate this value based on your requirements
+        const unPrime = 1.192; // You can calculate this value based on your requirements
+        const kT = unPrime * vf;
+        const TI = kT * SL;
+        const TIPercentage = (TI / EL) * 100;
+        const Sy = Math.sqrt(Syy / (n - 1));
+        const r2 = 1 - (SL ** 2 / (Sy ** 2));
+        const r = Math.sqrt(1 - (SL ** 2 / (Sy ** 2)));
+
+        // Define the summary data
+        const summaryData = [
+            { variable: 'n', equation: 'Number of data points =', value: n },
+            { variable: 'x~', equation: 'x~ = 1/n*(Sum of (xi)) =', value: xAverage.toFixed(2) },
+            { variable: 'Sxx', equation: 'Sxx = Sum((xi-x~)^2) =', value: Sxx.toFixed(2) },
+            { variable: 'y~', equation: 'y~ = 1/n*(Sum of (yi)) =', value: yAverage.toFixed(2) },
+            { variable: 'Syy', equation: 'Syy = Sum((yi-y~)^2) =', value: Syy.toFixed(2) },
+            { variable: 'Sxy', equation: 'Sxy = Sum((xi-x~)(yi-y~)) =', value: Sxy.toFixed(2) },
+            { variable: 'b0', equation: 'b0 = y~-b1x~ =', value: b0Li.toFixed(3) },
+            { variable: 'b1', equation: 'b1 = Sxy/Sxx =', value: b1Li.toFixed(3) },
+            { variable: 'SL', equation: 'SL = SQRT(1/(n-2)(Sum(yi^-yi)^2)) =', value: SL.toFixed(3) },
+            { variable: 'y^mean', equation: 'y^ at mean x value =', value: yHatMean.toFixed(2) },
+            { variable: 'tf', equation: 'tf from table =', value: tf.toFixed(3) },
+            { variable: 'CI', equation: 'CI = tf*SL*SQRT(1/n) =', value: CI.toFixed(3) },
+            { variable: 'EL', equation: 'Emission Limit =', value: EL },
+            { variable: 'CI%', equation: 'CI% = CI/EL*100% =', value: CIPercentage.toFixed(2) + '%' },
+            { variable: "n'", equation: 'n\' = n =', value: nPrime },
+            { variable: 'vf', equation: 'vf from table =', value: vf.toFixed(3) },
+            { variable: "un'", equation: 'un\' from table =', value: unPrime.toFixed(3) },
+            { variable: 'kT', equation: 'kt = un\'*vf =', value: kT.toFixed(3) },
+            { variable: 'TI', equation: 'TI = kt*SL =', value: TI.toFixed(3) },
+            { variable: 'TI%', equation: 'TI% = TI/EL*100% =', value: TIPercentage.toFixed(2) + '%' },
+            { variable: 'Sy', equation: 'Sy = SQRT(Syy/(n-1)) =', value: Sy.toFixed(3) },
+            { variable: 'r2', equation: 'r2 = 1-(SL^2/Sy^2) =', value: r2.toFixed(3) },
+            { variable: 'r', equation: 'r = SQRT((1-SL^2/Sy^2)) =', value: r.toFixed(3) }
+        ];
+
+        // Function to generate the summary table
+        function generateSummaryTable() {
+            const linearSummaryTable = document.getElementById('linear-summary-table');
+            const tbody = linearSummaryTable.querySelector('tbody');
+            summaryData.forEach((row) => {
+                const newRow = `
+                    <tr>
+                        <td>${row.variable}</td>
+                        <td>${row.equation}</td>
+                        <td>${row.value}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += newRow;
+            });
+
+            
+
+            
+        } 
+
+        const xValuesJSON = localStorage.getItem('xValues');
+        const yValuesJSON = localStorage.getItem('yValues');
+
+        if (xValuesJSON && yValuesJSON) {
+            const xValues = JSON.parse(xValuesJSON);
+            const yValues = JSON.parse(yValuesJSON);
+
+            // Your logarithmic sum calculation and chart creation here
+            const b0 = 1; // Replace with your actual calculation
+            const b1 = 2; // Replace with your actual calculation
+
+            // Ensure Chart is defined in the global scope
+            if (typeof Chart !== 'undefined') {
+                // Create the chart
+                const ctx = document.getElementById('chart').getContext('2d');
+                const chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: xValues.map(x => x.toString()),
+                        datasets: [
+                            {
+                                label: 'Actual Data',
+                                data: yValues,
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1,
+                                fill: false
+                            },
+                            {
+                                label: 'Fitted Data',
+                                data: yValues.map((y, i) => b0 + b1 * Math.log(xValues[i]) + 1),
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 1,
+                                fill: false
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+            } else {
+                console.error('Chart.js is not defined. Make sure you have loaded the Chart.js library.');
+            }
+        }
+    
+        // Call the function to generate the table when the page loads
+        generateSummaryTable();
+        
+        // Call the function to update field values
+        updateFieldValues();
+        
+    </script>
+
+      
+<h3>Criterion Evaluation</h2>
+
+    <table id="criterion-table">
+        <thead>
+            <tr>
+                <th>Criterion</th>
+                <th>Actual</th>
+                <th>Allowable</th>
+                <th>Acceptable</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Correlation Coefficient</td>
+                <td id="correlation-actual"></td>
+                <td>>0.85</td>
+                <td id="correlation-acceptable" class="yes-no-cell"></td>
+            </tr>
+            <tr>
+                <td>Confidence Interval (%)</td>
+                <td id="confidence-actual"></td>
+                <td><10%</td>
+                <td id="confidence-acceptable" class="yes-no-cell"></td>
+            </tr>
+            <tr>
+                <td>Tolerance Interval (%)</td>
+                <td id="tolerance-actual"></td>
+                <td><25%</td>
+                <td id="tolerance-acceptable" class="yes-no-cell"></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <script>
+    
+        const correlationCoefficientLinear = r.toFixed(2);
+        const confidenceIntervalLinear = CIPercentage.toFixed(2);
+        const toleranceIntervalLinear = TIPercentage.toFixed(2);
+    
+    
+        // Calculate acceptability
+        const correlationAcceptable = correlationCoefficientLinear > 0.85 ? 'Yes' : 'No';
+        const confidenceAcceptable = confidenceIntervalLinear < 10 ? 'Yes' : 'No';
+        const toleranceAcceptable = toleranceIntervalLinear < 25 ? 'Yes' : 'No';
+        
+        // Display the actual values and acceptability
+        document.getElementById('correlation-actual').textContent = correlationCoefficientLinear;
+        document.getElementById('confidence-actual').textContent = confidenceIntervalLinear + '%';
+        document.getElementById('tolerance-actual').textContent = toleranceIntervalLinear + '%';
+        document.getElementById('correlation-acceptable').textContent = correlationAcceptable;
+        document.getElementById('confidence-acceptable').textContent = confidenceAcceptable;
+        document.getElementById('tolerance-acceptable').textContent = toleranceAcceptable;
+    
+        // Check if the "Acceptable" column has no value and apply red background
+        const acceptableCells = document.querySelectorAll('.yes-no-cell');
+        acceptableCells.forEach((cell) => {
+            if (cell.textContent === 'No') {
+                cell.style.backgroundColor = '#FFCCCC';
+            } else {
+                cell.style.backgroundColor = '#94C691';
+            }
+        });
+        localStorage.setItem('correlationCoefficientLinear', correlationCoefficientLinear);
+        localStorage.setItem('confidenceIntervalLinear', confidenceIntervalLinear);
+        localStorage.setItem('toleranceIntervalLinear', toleranceIntervalLinear);
+        localStorage.setItem('b0Li', b0Li);
+        localStorage.setItem('b1Li', b1Li);
+
+
+
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="LogarithmicCalcs_style.css">
+    <title>Your Website</title>
+
+</head>
+<body>
+    <div class="top-bar">
+        <img class="logo" src="logo.png" alto="logo">
+        <ul>
+            <li><a href="TestData.html">Test data</a></li>
+            <li class="dropdown">
+                <a href="#">Linear</a>
+                <ul class="submenu">
+                    <li><a href="LinearCalcs.html">Linear clacs</a></li>
+                    <li><a href="LinearSum.html">Linear Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Polynomials</a>
+                <ul class="submenu">
+                    <li><a href="PolynomialCalcs.html">Polynomials clacs</a></li>
+                    <li><a href="PolynomialSum.html">Polynomials Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Logarithmic</a>
+                <ul class="submenu">
+                    <li><a href="LogarithmicCalc.html">Logarithmic clacs</a></li>
+                    <li><a href="LogarithmicSum.html">Logarithmic Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Exponential</a>
+                <ul class="submenu">
+                    <li><a href="ExponentialCalcs.html">Exponential clacs</a></li>
+                    <li><a href="ExponentialSum.html">Exponential Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Power</a>
+                <ul class="submenu">
+                    <li><a href="PowerCalcs.html">Power clacs</a></li>
+                    <li><a href="PowerSum.html">Power Sum</a></li>
+                </ul>
+            </li>
+           
+            <li class="dropdown">
+                <a href="#">Others</a>
+                <ul class="submenu">
+                    <li><a href="BestModel.html">Best model</a></li>
+                    <li><a href="PredictedValues.html">Predicted value</a></li>
+                    <li><a href="SateTable.html">Stats table</a></li>
+                    <li><a href="Version.html">Version</a></li>
+                </ul>
+            </li>
+           
+        </ul>
+    </div>
+    
+        <h1>Logarithmic Clacs</h1>
+    
+        <table id="logarithmic-table">
+            <thead>
+                <tr>
+                    <th>Run</th>
+                    <th>x</th>
+                    <th>x`</th>
+                    <th>y</th>
+                    <th>(xi'-x'~)2</th>
+                    <th>(yi-y~)2</th>
+                    <th>(x'i-x'~)(yi-y~)</th>
+                    <th>y^</th>
+                    <th>(y^i-yi)2</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be added dynamically here -->
+            </tbody>
+        </table>
+
+        <table id="field-table">
+            <thead>
+                <tr>
+                    <th>Field</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Facility:</td>
+                    <td>PLTMG BIMA</td>
+                </tr>
+                <tr>
+                    <td>Location:</td>
+                    <td>BIMA</td>
+                </tr>
+                <tr>
+                    <td>Emission Unit:</td>
+                    <td>STACK 1</td>
+                </tr>
+                <tr>
+                    <td>Test Dates:</td>
+                    <td>7/1/2023</td>
+                </tr>
+                <tr>
+                    <td>Emission Limit:</td>
+                    <td>15 mg/acm</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <script>
+            function updateFieldValues() {
+                        // ... (your field values update code) ...
+                    }
+            function updateFieldValues() {
+            const testDataJSON = localStorage.getItem('testData');
+            // Retrieve and display Facility, Location, Emission Unit, and Test Dates
+            if (testDataJSON) {
+                const testData = JSON.parse(testDataJSON);
+
+                // Display Facility, Location, Emission Unit, and Test Dates
+                document.getElementById('facility-summary').textContent += testData.facility;
+                document.getElementById('location-summary').textContent += testData.location;
+                document.getElementById('emission-unit-summary').textContent += testData.emissionUnit;
+                document.getElementById('test-dates-summary').textContent += testData.testDates;
+                document.getElementById('emission-limit-summary').textContent += testData.emissionLimit;
+            }
+        }
+
+            // Retrieve x and y values from the Test Data page
+            const xValuesJSON = localStorage.getItem('xValues');
+            const yValuesJSON = localStorage.getItem('yValues');
+
+
+            if (xValuesJSON && yValuesJSON) {
+                const xValues = JSON.parse(xValuesJSON);
+                const yValues = JSON.parse(yValuesJSON); 
+                // Calculate mean values for x and x`
+                const meanX = xValues.reduce((acc, x) => acc + Math.log(x), 0) / xValues.length;
+                // Calculate the mean of y
+                const sumY = yValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+                const meanY = sumY / yValues.length;
+                // yMean now holds the mean of y
+                console.log("Mean of y:", meanY);
+
+                // Initialize variables for cumulative sums
+                let n = xValues.length;
+                let xSum = 0;
+                let ySum = 0;
+                let xLogSum = 0;
+                let yLogSum = 0;
+                let xiPrimeMinusXiPrimeMeanSquaredSum = 0;
+                let yiMinusYMeanSquaredSum = 0;
+                let xiPrimeMinusXiPrimeMeanTimesYiMinusYMeanSum = 0;
+                let sxy = 0;
+                let sxx = 0;
+                let syy=0;
+                let yMean=0;
+                let xiPrime=0;
+                let yiPrime=0;
+                let xPrimeMean=0;
+                let sumyiHatMinusYiSquared=0;
+                let sumyHat=0;
+            
+                
+                for(let i = 0; i < n; i++){
+                    const x = xValues[i];
+                    const y = yValues[i];
+                    const xLog = Math.log(x);
+                    const yLog = Math.log(y);
+                    yMean = (1 / n) * ySum;
+
+                    xSum += x;
+                    ySum += y;
+                    xLogSum += xLog;
+                    yLogSum += yLog;
+    
+                    xiPrime = 1 / n * (xLogSum);
+                    yiPrime = (1 / n) * yLogSum;
+
+                    xPrimeMean = (1 / n) * xLogSum;
+
+
+                    xiPrimeMinusXiPrimeMeanSquaredSum = Math.pow(xLog - meanX, 2);
+                    yiMinusYMeanSquaredSum = Math.pow(y - meanY, 2);
+                    xiPrimeMinusXiPrimeMeanTimesYiMinusYMeanSum = (xLog - meanX) * (y - meanY);
+                    sxx += xiPrimeMinusXiPrimeMeanSquaredSum;
+                    sxy += xiPrimeMinusXiPrimeMeanTimesYiMinusYMeanSum;
+                    syy += yiMinusYMeanSquaredSum;
+
+
+
+                
+    
+                }
+
+                const b1 = sxy / sxx;
+                const b0 = yMean - b1 * xPrimeMean + 1;
+
+                // Calculate sums and x' and y' values
+                for (let i = 0; i < n; i++) {
+                    const x = xValues[i];
+                    const y = yValues[i];
+                    const xLog = Math.log(x);
+
+                    const yLog = Math.log(y);
+
+                    const xSum = xValues.reduce((acc, x) => acc + x, 0).toFixed(2);
+                    const ySum = xValues.reduce((acc, y) => acc + y, 0).toFixed(2);
+                    const xLogsum = xValues.reduce((acc, x) => acc + Math.log(x), 0).toFixed(2);
+                    yLogSum += yLog;
+    
+                    const xiPrime = 1 / n * (xLogSum);
+                    const yiPrime = (1 / n) * yLogSum;
+    
+                    xiPrimeMinusXiPrimeMeanSquaredSum = Math.pow(xLog - meanX, 2);
+                    yiMinusYMeanSquaredSum = Math.pow(y - meanY, 2);
+                    xiPrimeMinusXiPrimeMeanTimesYiMinusYMeanSum = (xLog - meanX) * (y - meanY);
+
+                    // Calculate y^ and (y^i - yi)^2 for each data point
+                    const xPrimeMean = (1 / n) * xLogSum;
+                    const yMean = (1 / n) * ySum;
+                    const yHat = b0 + b1 * xLog ;
+                    const yiHatMinusYiSquared = Math.pow(yHat - y, 2);
+                    sumyiHatMinusYiSquared += yiHatMinusYiSquared;
+                    sumyHat+=yHat;
+
+                    // Add a row to the table with the calculated values
+                    const newRow = `
+                        <tr>
+                            <td>${i + 1}</td>
+                            <td>${x}</td>
+                            <td>${xLog.toFixed(2)}</td>
+                            <td>${y}</td>
+                            <td>${xiPrimeMinusXiPrimeMeanSquaredSum.toFixed(2)}</td>
+                            <td>${yiMinusYMeanSquaredSum.toFixed(2)}</td>
+                            <td>${xiPrimeMinusXiPrimeMeanTimesYiMinusYMeanSum.toFixed(2)}</td>
+                            <td>${yHat.toFixed(2)}</td>
+                            <td>${yiHatMinusYiSquared.toFixed(2)}</td>
+                        </tr>
+                    `;
+    
+                    const tableBody = document.querySelector('#logarithmic-table tbody');
+                    tableBody.innerHTML += newRow;
+                    }
+
+                    
+        // Calculate the sum of each column
+        const sumRun = n;
+        const sumX = xSum.toFixed(2);
+        const sumXPrimeMinusXPrimeMeanSquared = sxx.toFixed(2);
+        const sumYMinusYMeanSquared = syy.toFixed(2);
+        const sumXPrimeMinusXPrimeMeanTimesYMinusYMean = sxy.toFixed(2);
+        const sumYHat = sumyHat.toFixed(2);
+        const sumYHatMinusYiSquared = sumyiHatMinusYiSquared.toFixed(2);
+
+
+        // Calculate the mean of each column
+        const meanRun = sumRun;
+        const meanXPrime = xPrimeMean .toFixed(2);
+        const meanXPrimeMinusXPrimeMeanSquared = (sxx / n).toFixed(2);
+        const meanYMinusYMeanSquared = (syy / n).toFixed(2);
+        const meanXPrimeMinusXPrimeMeanTimesYMinusYMean = (sxy / n).toFixed(2);
+        const meanYHat = (sumyHat / n).toFixed(2);
+        const meanYHatMinusYiSquared = (sumyiHatMinusYiSquared / n).toFixed(2);
+
+        // Add the rows for the sum and mean calculations
+        const tableBody = document.querySelector('#logarithmic-table tbody');
+        const sumRow = `
+            <tr class="sum-row">
+                <td >Sum</td>
+                <td>${sumX}</td>
+                <td>${xLogSum.toFixed(2)}</td>
+                <td>${sumY}</td>
+                <td>${sumXPrimeMinusXPrimeMeanSquared}</td>
+                <td>${sumYMinusYMeanSquared}</td>
+                <td>${sumXPrimeMinusXPrimeMeanTimesYMinusYMean}</td>
+                <td>${sumYHat}</td>
+                <td>${sumYHatMinusYiSquared}</td>
+            </tr>
+        `;
+        const meanRow = `
+            <tr>
+                <td>Mean</td>
+                <td>${meanX.toFixed(2)}</td>
+                <td>${meanXPrime}</td>
+                <td>${meanY.toFixed(2)}</td>
+                <td>${meanXPrimeMinusXPrimeMeanSquared}</td>
+                <td>${meanYMinusYMeanSquared}</td>
+                <td>${meanXPrimeMinusXPrimeMeanTimesYMinusYMean}</td>
+                <td>${meanYHat}</td>
+                <td>${meanYHatMinusYiSquared}</td>
+            </tr>
+        `;
+        tableBody.innerHTML += sumRow + meanRow;
+
+        // Store calculated values in local storage
+        localStorage.setItem('b0', b0);
+        localStorage.setItem('b1', b1);
+        localStorage.setItem('sxx', sxx);
+        localStorage.setItem('sxy', sxy);
+        localStorage.setItem('syy', syy);
+        localStorage.setItem('sumyHat', sumyHat);
+        localStorage.setItem('sumyiHatMinusYiSquared', sumyiHatMinusYiSquared);
+
+            }
+
+        // Call the function to update field values
+        updateFieldValues();
+            
+        </script>
+</body>
+</html>

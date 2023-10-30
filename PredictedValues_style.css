@@ -1,0 +1,243 @@
+/* Style for the top bar menu */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.top-bar {
+    background-color: hwb(0 100% 0%);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); /* Add a shadow */
+    padding: 7px;
+    display: flex;
+    justify-content: space-between; /* Move menu items to the right */
+    align-items: center; /* Vertically center items */
+}
+
+.logo {
+    cursor: pointer;
+    max-width: 90px; /* Adjust the maximum width to decrease the size */
+    height: auto; /* Maintain the aspect ratio */
+    margin-left: 50px; /* Add left margin to the logo */
+}
+
+.top-bar ul {
+    list-style-type: none;
+    padding: 5px;
+    color: #fff;
+    font-size: 13px;
+    margin-right: 350px;
+    display: flex;
+}
+
+.top-bar li {
+    padding: 10px;
+    margin: 0;
+    display: inline-block;
+    padding: 10px; /* Adjust the padding to center the items vertically */
+    line-height: 20px; /* Adjust the line-height to center the items vertically */
+    position: relative; /* Add relative positioning for pseudo-element */
+}
+
+.top-bar a {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+}
+
+/* Add a line under each menu item on hover */
+.top-bar li:hover::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background-color: #52a594; /* Change the line color here */
+    bottom: 0;
+    left: 0;
+}
+
+/* Style for the dropdown menu */
+.dropdown {
+    position: relative;
+}
+
+.dropdown .submenu {
+    display: none;
+    position: absolute;
+    background-color:hwb(0 100% 0%);
+    list-style-type: none;
+    padding: 0;
+    margin:5px; /* Add margin-top to move the submenu down */
+}
+
+.dropdown:hover .submenu {
+    display: block;
+}
+
+.dropdown .submenu li {
+    padding: 10px;
+    width: 130px;
+    background: transparent;
+    border-radius: 0;
+    text-align: center;
+}
+
+.dropdown .submenu a {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+}
+
+
+
+/* Hover effect for top-level menu items */
+.top-bar li:hover {
+    border-radius: 50px;
+    height: 35px;
+    align-items: center;
+    padding: 10px; /* Adjust the padding to center the items vertically */
+    line-height: 20px; /* Adjust the line-height to center the items vertically */
+}
+
+
+/* Reset some default styles for a cleaner look */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    font-family: Mukta, sans-serif;
+}
+
+h1{
+    text-align: center;
+    font-weight:medium;
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+
+/* Main container */
+.container {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Table styles */
+table {
+    border-collapse:collapse;
+    background-color: rgb(241, 241, 241);
+    text-align: left;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    overflow:hidden;
+    border-radius: 10px;
+}
+
+#predicted-values-table{
+    width: 80%;
+    margin-right: 10px;
+}
+
+#predicted-values-table th,
+#predicted-values-table td {
+    padding: 8px;
+    text-align: center;
+}
+
+#predicted-values-table th {
+    background-color: #272626;
+    color: rgb(255, 255, 255);
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    font-weight: 900;
+    box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.1);
+}
+#predicted-values-table tr:nth-child(even) {
+    background-color: #fff;
+}
+
+/* Style the table rows on hover */
+#predicted-values-table tbody tr:hover {
+    background-color: #d4d4d4;
+}
+
+/* Form elements */
+input[type="text"] {
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+
+/* Style labels */
+label {
+    margin: 10px;
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* Style input elements */
+input[type="text"] {
+    width: 50%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* Buttons */
+#add-row {
+    padding: 10px 20px;
+    margin: 10px;
+    background-color: #4bc9b8;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+#calculate-predictions{
+    padding: 10px 20px;
+    margin: 10px;
+    background-color: #4bc9b8;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+#calculate-predictions:hover {
+    background-color: #31AA99;
+}
+
+
+#add-row:hover {
+    background-color: #31AA99;
+}
+
+
+
+button {
+    padding: 10px 20px;
+    margin: 10px;
+    background-color: #F2878A;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+button:hover {
+    background-color: rgb(224, 115, 115);
+}
+
+#head{
+    text-align: center;
+}

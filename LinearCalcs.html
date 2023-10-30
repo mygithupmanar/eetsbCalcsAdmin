@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="LinearCalcs_style.css">
+    <title>Linear Calculations</title>
+</head>
+<body>
+    <div class="top-bar">
+        <img class="logo" src="logo.png" alt="logo">
+        <ul>
+            <li><a href="TestData.html">Test data</a></li>
+            <li class="dropdown">
+                <a href="#">Linear</a>
+                <ul class="submenu">
+                    <li><a href="LinearCalcs.html">Linear clacs</a></li>
+                    <li><a href="LinearSum.html">Linear Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Polynomials</a>
+                <ul class="submenu">
+                    <li><a href="PolynomialCalcs.html">Polynomials clacs</a></li>
+                    <li><a href="PolynomialSum.html">Polynomials Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Logarithmic</a>
+                <ul class="submenu">
+                    <li><a href="LogarithmicCalc.html">Logarithmic clacs</a></li>
+                    <li><a href="LogarithmicSum.html">Logarithmic Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Exponential</a>
+                <ul class="submenu">
+                    <li><a href="ExponentialCalcs.html">Exponential clacs</a></li>
+                    <li><a href="ExponentialSum.html">Exponential Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Power</a>
+                <ul class="submenu">
+                    <li><a href="PowerCalcs.html">Power clacs</a></li>
+                    <li><a href="PowerSum.html">Power Sum</a></li>
+                </ul>
+            </li>
+
+            <li class="dropdown">
+                <a href="#">Others</a>
+                <ul class="submenu">
+                    <li><a href="BestModel.html">Best model</a></li>
+                    <li><a href="PredictedValues.html">Predicted value</a></li>
+                    <li><a href="SateTable.html">Stats table</a></li>
+                    <li><a href="Version.html">Version</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <h1>Linear Calculi</h1>
+
+    <!-- Linear Calculations Table -->
+    <div id="linear-table">
+        <!-- The generated table will appear here -->
+    </div>
+
+    <table id="field-table">
+        <thead>
+            <tr>
+                <th>Field</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Facility:</td>
+                <td>PLTMG BIMA</td>
+            </tr>
+            <tr>
+                <td>Location:</td>
+                <td>BIMA</td>
+            </tr>
+            <tr>
+                <td>Emission Unit:</td>
+                <td>STACK 1</td>
+            </tr>
+            <tr>
+                <td>Test Dates:</td>
+                <td>7/1/2023</td>
+            </tr>
+            <tr>
+                <td>Emission Limit:</td>
+                <td>15 mg/acm</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        // Function to calculate the sum of an array
+        function calculateSum(arr) {
+            return arr.reduce((sum, value) => sum + value, 0);
+        }
+
+        // Function to calculate the mean of an array
+        function calculateMean(arr) {
+            const sum = calculateSum(arr);
+            return sum / arr.length;
+        }
+
+        function updateFieldValues() {
+            // ... (your field values update code) ...
+        }
+
+        // Retrieve x and y values from localStorage
+        const storedXValues = localStorage.getItem('xValues');
+        const storedYValues = localStorage.getItem('yValues');
+
+        // Parse the stored values (they are stored as strings)
+        const xValues = storedXValues ? JSON.parse(storedXValues) : [];
+        const yValues = storedYValues ? JSON.parse(storedYValues) : [];
+
+        function updateFieldValues() {
+            const testDataJSON = localStorage.getItem('testData');
+            // Retrieve and display Facility, Location, Emission Unit, and Test Dates
+            if (testDataJSON) {
+                const testData = JSON.parse(testDataJSON);
+
+                // Display Facility, Location, Emission Unit, and Test Dates
+                document.getElementById('facility-summary').textContent += testData.facility;
+                document.getElementById('location-summary').textContent += testData.location;
+                document.getElementById('emission-unit-summary').textContent += testData.emissionUnit;
+                document.getElementById('test-dates-summary').textContent += testData.testDates;
+                document.getElementById('emission-limit-summary').textContent += testData.emissionLimit;
+            }
+        }
+
+        // Calculate x~ (xAverage) and y~ (yAverage)
+        const xAverage = xValues.reduce((sum, x) => sum + x, 0) / xValues.length;
+        const yAverage = yValues.reduce((sum, y) => sum + y, 0) / yValues.length;
+
+        // Initialize variables for b0, b1, Sxy, and Sxx
+        let b0 = 0;
+        let b1 = 0;
+        let Sxy = 0;
+        let Sxx = 0;
+        let squaredYHatDifferenceSum=0;
+
+        // Calculate Sxy and Sxx
+        for (let i = 0; i < xValues.length; i++) {
+            const xi = xValues[i];
+            const yi = yValues[i];
+            const xiMinusXAverage = xi - xAverage;
+            const yiMinusYAverage = yi - yAverage;
+
+            Sxy += xiMinusXAverage * yiMinusYAverage;
+            Sxx += xiMinusXAverage * xiMinusXAverage;
+        }
+
+        // Calculate b1
+        b1 = Sxy / Sxx;
+
+        // Calculate b0
+        b0 = yAverage - b1 * xAverage;
+
+        // Function to generate the linear calculations table
+        function generateLinearTable() {
+            const linearTable = document.getElementById('linear-table');
+            let tableHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Run</th>
+                            <th>x</th>
+                            <th>y</th>
+                            <th>(xi-x~)2</th>
+                            <th>(yi-y~)2</th>
+                            <th>(xi-x~)(yi-y~)</th>
+                            <th>y^</th>
+                            <th>(y^i-yi)2</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            const columnSums = {
+                x: calculateSum(xValues),
+                y: calculateSum(yValues),
+                xiMinusXAverageSquared: 0,
+                yiMinusYAverageSquared: 0,
+                xyDifferenceProduct: 0,
+                yHat: 0,
+                squaredYHatDifference: 0
+            };
+
+
+            for (let i = 0; i < xValues.length; i++) {
+                const xi = xValues[i];
+                const yi = yValues[i];
+                const xiMinusXAverage = xi - xAverage;
+                const yiMinusYAverage = yi - yAverage;
+                const xiMinusXAverageSquared = xiMinusXAverage ** 2;
+                const yiMinusYAverageSquared = yiMinusYAverage ** 2;
+                const xyDifferenceProduct = xiMinusXAverage * yiMinusYAverage;
+                const yHat = b0 + b1 * xi;
+                const squaredYHatDifference = (yHat - yi) ** 2;
+
+                const rowHTML = `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td>${xi.toFixed(2)}</td>
+                        <td>${yi.toFixed(2)}</td>
+                        <td>${xiMinusXAverageSquared.toFixed(2)}</td>
+                        <td>${yiMinusYAverageSquared.toFixed(2)}</td>
+                        <td>${xyDifferenceProduct.toFixed(2)}</td>
+                        <td>${yHat.toFixed(2)}</td>
+                        <td>${squaredYHatDifference.toFixed(3)}</td>
+                    </tr>
+                `;
+
+                tableHTML += rowHTML;
+
+                // Update column sums
+                columnSums.xiMinusXAverageSquared += xiMinusXAverageSquared;
+                columnSums.yiMinusYAverageSquared += yiMinusYAverageSquared;
+                columnSums.xyDifferenceProduct += xyDifferenceProduct;
+                columnSums.yHat += yHat;
+                columnSums.squaredYHatDifference += squaredYHatDifference;
+            }
+
+
+
+            // Add a row for sum
+            tableHTML += `
+                <tr class="sum-row">            
+                    <td>Sum</td>
+                    <td>${columnSums.x.toFixed(2)}</td>
+                    <td>${columnSums.y.toFixed(2)}</td>
+                    <td>${columnSums.xiMinusXAverageSquared.toFixed(2)}</td>
+                    <td>${columnSums.yiMinusYAverageSquared.toFixed(2)}</td>
+                    <td>${columnSums.xyDifferenceProduct.toFixed(2)}</td>
+                    <td>${columnSums.yHat.toFixed(2)}</td>
+                    <td>${columnSums.squaredYHatDifference.toFixed(3)}</td>
+                </tr>
+            `;
+
+            // Calculate the mean for x and y values
+            const meanX = calculateMean(xValues).toFixed(2);
+            const meanY = calculateMean(yValues).toFixed(2);
+
+            // Add a row for mean
+            tableHTML += `
+                <tr class="mean-row">
+                    <td>Mean</td>
+                    <td>${meanX}</td>
+                    <td>${meanY}</td>
+                    <td>${(columnSums.xiMinusXAverageSquared / xValues.length).toFixed(2)}</td>
+                    <td>${(columnSums.yiMinusYAverageSquared / yValues.length).toFixed(2)}</td>
+                    <td>${(columnSums.xyDifferenceProduct / xValues.length).toFixed(2)}</td>
+                    <td>${(columnSums.yHat / xValues.length).toFixed(2)}</td>
+                    <td>${(columnSums.squaredYHatDifference / xValues.length).toFixed(3)}</td>
+                </tr>
+            `;
+
+            tableHTML += `
+                    </tbody>
+                </table>
+            `;
+
+            // Set the generated table HTML
+            linearTable.innerHTML = tableHTML;
+
+            localStorage.setItem('columnSums.squaredYHatDifference', columnSums.squaredYHatDifference);
+
+        }
+
+        // Call the function to generate the table when the page loads
+        generateLinearTable();
+
+        // Call the function to update field values
+        updateFieldValues();
+    </script>
+</body>
+</html>

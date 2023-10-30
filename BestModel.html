@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="BestModel_style.css">
+    <title>Your Website</title>
+
+</head>
+<body>
+    <div class="top-bar">
+        <img class="logo" src="logo.png" alto="logo">
+        <ul>
+            <li><a href="TestData.html">Test data</a></li>
+            <li class="dropdown">
+                <a href="#">Linear</a>
+                <ul class="submenu">
+                    <li><a href="LinearCalcs.html">Linear clacs</a></li>
+                    <li><a href="LinearSum.html">Linear Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Polynomials</a>
+                <ul class="submenu">
+                    <li><a href="PolynomialCalcs.html">Polynomials clacs</a></li>
+                    <li><a href="PolynomialSum.html">Polynomials Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Logarithmic</a>
+                <ul class="submenu">
+                    <li><a href="LogarithmicCalc.html">Logarithmic clacs</a></li>
+                    <li><a href="LogarithmicSum.html">Logarithmic Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Exponential</a>
+                <ul class="submenu">
+                    <li><a href="ExponentialCalcs.html">Exponential clacs</a></li>
+                    <li><a href="ExponentialSum.html">Exponential Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Power</a>
+                <ul class="submenu">
+                    <li><a href="PowerCalcs.html">Power clacs</a></li>
+                    <li><a href="PowerSum.html">Power Sum</a></li>
+                </ul>
+            </li>
+           
+            <li class="dropdown">
+                <a href="#">Others</a>
+                <ul class="submenu">
+                    <li><a href="BestModel.html">Best model</a></li>
+                    <li><a href="PredictedValues.html">Predicted value</a></li>
+                    <li><a href="SateTable.html">Stats table</a></li>
+                    <li><a href="Version.html">Version</a></li>
+                </ul>
+            </li>
+           
+        </ul>
+    </div>
+
+    <h1>Best Model</h1>
+    
+
+
+    <table id="best-model-table">
+        <thead>
+            <tr>
+                <th>Model</th>
+                <th>Correlation coefficient (a)</th>
+                <th>> 0.85 ?</th>
+                <th>Confidence interval half range percentage</th>
+                <th>< 10% ?</th>
+                <th>Tolerance interval half range percentage</th>
+                <th>< 25% ?</th>
+                <th>Min/max within allowable range?</th>
+                <th>Does model meet all criteria?</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Linear</td>
+                <td id="linear-correlation"></td>
+                <td id="linear-greater-0.85"></td>
+                <td id="linear-confidence"></td>
+                <td id="linear-less-10"></td>
+                <td id="linear-tolerance"></td>
+                <td id="linear-less-25"></td>
+                <td id="linear-min-max"></td>
+                <td id="linear-meets-criteria"></td>
+            </tr>
+
+            <tr>
+                <td>Polynomial</td>
+                <td id="linear-polynomial-correlation"></td>
+                <td id="linear-polynomial-greater-0.85"></td>
+                <td id="linear-polynomial-confidence"></td>
+                <td id="linear-polynomial-less-10"></td>
+                <td id="linear-polynomial-tolerance"></td>
+                <td id="linear-polynomial-less-25"></td>
+                <td id="linear-polynomial-min-max"></td>
+                <td id="linear-polynomial-meets-criteria"></td>
+            </tr>
+            <tr>
+                <td>Logarithmic</td>
+                <td id="logarithmic-correlation"></td>
+                <td id="logarithmic-greater-0.85"></td>
+                <td id="logarithmic-confidence"></td>
+                <td id="logarithmic-less-10"></td>
+                <td id="logarithmic-tolerance"></td>
+                <td id="logarithmic-less-25"></td>
+                <td id="logarithmic-min-max"></td>
+                <td id="logarithmic-meets-criteria"></td>
+            </tr>
+            <tr>
+                <td>Exponential</td>
+                <td id="exponential-correlation"></td>
+                <td id="exponential-greater-0.85"></td>
+                <td id="exponential-confidence"></td>
+                <td id="exponential-less-10"></td>
+                <td id="exponential-tolerance"></td>
+                <td id="exponential-less-25"></td>
+                <td id="exponential-min-max"></td>
+                <td id="exponential-meets-criteria"></td>
+            </tr>
+            <tr>
+                <td>Power</td>
+                <td id="power-correlation"></td>
+                <td id="power-greater-0.85"></td>
+                <td id="power-confidence"></td>
+                <td id="power-less-10"></td>
+                <td id="power-tolerance"></td>
+                <td id="power-less-25"></td>
+                <td id="power-min-max"></td>
+                <td id="power-meets-criteria"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p id="best-model-text">The best model: <strong id="best-model-name"></strong></p>
+
+    <script>
+        // Function to check if a value is greater than 0.85
+        function isGreaterThan0_85(value) {
+            return value > 0.85 ? 'Yes' : 'No';
+        }
+
+        // Function to check if a value is less than 10%
+        function isLessThan10(value) {
+            return value < 10 ? 'Yes' : 'No';
+        }
+
+        // Function to check if a value is less than 25%
+        function isLessThan25(value) {
+            return value < 25 ? 'Yes' : 'No';
+        }
+
+        // Function to determine if a model meets all criteria
+        function meetsAllCriteria(greaterThan0_85, lessThan10, lessThan25) {
+            if (greaterThan0_85 === 'Yes' && lessThan10 === 'Yes' && lessThan25 === 'Yes') {
+                return 'Yes';
+            } else {
+                return 'No';
+            }
+        }
+
+        // Retrieve data for Linear model (Replace with actual values)
+        const correlationCoefficientLinear = parseFloat(localStorage.getItem('correlationCoefficientLinear') || 0);
+        const confidenceIntervalLinear = parseFloat(localStorage.getItem('confidenceIntervalLinear') || 0);
+        const toleranceIntervalLinear = parseFloat(localStorage.getItem('toleranceIntervalLinear') || 0);
+        const linearMinMax = "b";
+
+        // Retrieve data for Polynomial model (Replace with actual values)
+        const correlationCoefficientPolynomial = parseFloat(localStorage.getItem('correlationCoefficientPolynomial') || 0);
+        const confidenceIntervalPolynomial = parseFloat(localStorage.getItem('confidenceIntervalPolynomial') || 0);
+        const toleranceIntervalPolynomial = parseFloat(localStorage.getItem('toleranceIntervalPolynomial') || 0);
+        const polynomialMinMax = localStorage.getItem('isMaxCurveGreater') || 'No';
+
+        // Retrieve data for Logarithmic model (Replace with actual values)
+        const correlationCoefficientLogarithmic = parseFloat(localStorage.getItem('correlationCoefficientLogarithmic') || 0);
+        const confidenceIntervalLogarithmic = parseFloat(localStorage.getItem('confidenceIntervalLogarithmic') || 0);
+        const toleranceIntervalLogarithmic = parseFloat(localStorage.getItem('toleranceIntervalLogarithmic') || 0);
+        const logarithmicMinMax = "b";
+
+        // Retrieve data for Exponential model (Replace with actual values)
+        const correlationCoefficientExponential = parseFloat(localStorage.getItem('correlationCoefficientExponential') || 0);
+        const confidenceIntervalExponential = parseFloat(localStorage.getItem('confidenceIntervalExponential') || 0);
+        const toleranceIntervalExponential = parseFloat(localStorage.getItem('toleranceIntervalExponential') || 0);
+        const exponentialMinMax = "b";
+
+        // Retrieve data for Power model (Replace with actual values)
+        const correlationCoefficientPower = parseFloat(localStorage.getItem('correlationCoefficientPower') || 0);
+        const confidenceIntervalPower = parseFloat(localStorage.getItem('confidenceIntervalPower') || 0);
+        const toleranceIntervalPower = parseFloat(localStorage.getItem('toleranceIntervalPower') || 0);
+        const powerMinMax = "b";
+
+        // Calculate criteria for each model
+        const linearGreater0_85 = isGreaterThan0_85(correlationCoefficientLinear);
+        const linearLess10 = isLessThan10(confidenceIntervalLinear);
+        const linearLess25 = isLessThan25(toleranceIntervalLinear);
+        const linearMeetsCriteria = meetsAllCriteria(
+            linearGreater0_85,
+            linearLess10,
+            linearLess25
+        );
+
+        const polynomialGreater0_85 = isGreaterThan0_85(correlationCoefficientPolynomial);
+        const polynomialLess10 = isLessThan10(confidenceIntervalPolynomial);
+        const polynomialLess25 = isLessThan25(toleranceIntervalPolynomial);
+        const polynomialMeetsCriteria = meetsAllCriteria(
+            polynomialGreater0_85,
+            polynomialLess10,
+            polynomialLess25
+        );
+
+        const logarithmicGreater0_85 = isGreaterThan0_85(correlationCoefficientLogarithmic);
+        const logarithmicLess10 = isLessThan10(confidenceIntervalLogarithmic);
+        const logarithmicLess25 = isLessThan25(toleranceIntervalLogarithmic);
+        const logarithmicMeetsCriteria = meetsAllCriteria(
+            logarithmicGreater0_85,
+            logarithmicLess10,
+            logarithmicLess25
+        );
+
+        const exponentialGreater0_85 = isGreaterThan0_85(correlationCoefficientExponential);
+        const exponentialLess10 = isLessThan10(confidenceIntervalExponential);
+        const exponentialLess25 = isLessThan25(toleranceIntervalExponential);
+        const exponentialMeetsCriteria = meetsAllCriteria(
+            exponentialGreater0_85,
+            exponentialLess10,
+            exponentialLess25
+        );
+
+        const powerGreater0_85 = isGreaterThan0_85(correlationCoefficientPower);
+        const powerLess10 = isLessThan10(confidenceIntervalPower);
+        const powerLess25 = isLessThan25(toleranceIntervalPower);
+        const powerMeetsCriteria = meetsAllCriteria(
+            powerGreater0_85,
+            powerLess10,
+            powerLess25
+        );
+
+        // Populate the table with the data
+        document.getElementById('linear-correlation').textContent = correlationCoefficientLinear;
+        document.getElementById('linear-greater-0.85').textContent = linearGreater0_85;
+        document.getElementById('linear-confidence').textContent = confidenceIntervalLinear + '%';
+        document.getElementById('linear-less-10').textContent = linearLess10;
+        document.getElementById('linear-tolerance').textContent = toleranceIntervalLinear + '%';
+        document.getElementById('linear-less-25').textContent = linearLess25;
+        document.getElementById('linear-min-max').textContent = linearMinMax;
+        document.getElementById('linear-meets-criteria').textContent = linearMeetsCriteria;
+
+        document.getElementById('linear-polynomial-correlation').textContent = correlationCoefficientPolynomial;
+        document.getElementById('linear-polynomial-greater-0.85').textContent = polynomialGreater0_85;
+        document.getElementById('linear-polynomial-confidence').textContent = confidenceIntervalPolynomial + '%';
+        document.getElementById('linear-polynomial-less-10').textContent = polynomialLess10;
+        document.getElementById('linear-polynomial-tolerance').textContent = toleranceIntervalPolynomial + '%';
+        document.getElementById('linear-polynomial-less-25').textContent = polynomialLess25;
+        document.getElementById('linear-polynomial-min-max').textContent = polynomialMinMax;
+        document.getElementById('linear-polynomial-meets-criteria').textContent = polynomialMeetsCriteria;
+
+        document.getElementById('logarithmic-correlation').textContent = correlationCoefficientLogarithmic;
+        document.getElementById('logarithmic-greater-0.85').textContent = logarithmicGreater0_85;
+        document.getElementById('logarithmic-confidence').textContent = confidenceIntervalLogarithmic + '%';
+        document.getElementById('logarithmic-less-10').textContent = logarithmicLess10;
+        document.getElementById('logarithmic-tolerance').textContent = toleranceIntervalLogarithmic + '%';
+        document.getElementById('logarithmic-less-25').textContent = logarithmicLess25;
+        document.getElementById('logarithmic-min-max').textContent = logarithmicMinMax;
+        document.getElementById('logarithmic-meets-criteria').textContent = logarithmicMeetsCriteria;
+
+        document.getElementById('exponential-correlation').textContent = correlationCoefficientExponential;
+        document.getElementById('exponential-greater-0.85').textContent = exponentialGreater0_85;
+        document.getElementById('exponential-confidence').textContent = confidenceIntervalExponential + '%';
+        document.getElementById('exponential-less-10').textContent = exponentialLess10;
+        document.getElementById('exponential-tolerance').textContent = toleranceIntervalExponential + '%';
+        document.getElementById('exponential-less-25').textContent = exponentialLess25;
+        document.getElementById('exponential-min-max').textContent = exponentialMinMax;
+        document.getElementById('exponential-meets-criteria').textContent = exponentialMeetsCriteria;
+
+        document.getElementById('power-correlation').textContent = correlationCoefficientPower;
+        document.getElementById('power-greater-0.85').textContent = powerGreater0_85;
+        document.getElementById('power-confidence').textContent = confidenceIntervalPower + '%';
+        document.getElementById('power-less-10').textContent = powerLess10;
+        document.getElementById('power-tolerance').textContent = toleranceIntervalPower + '%';
+        document.getElementById('power-less-25').textContent = powerLess25;
+        document.getElementById('power-min-max').textContent = powerMinMax;
+        document.getElementById('power-meets-criteria').textContent = powerMeetsCriteria;
+        
+        // Determine the best model
+        const modelCriteria = [
+            {
+                name: 'Linear',
+                criteria: [linearGreater0_85, linearLess10, linearLess25],
+            },
+            {
+                name: 'Polynomial',
+                criteria: [polynomialGreater0_85, polynomialLess10, polynomialLess25],
+            },
+            {
+                name: 'Logarithmic',
+                criteria: [logarithmicGreater0_85, logarithmicLess10, logarithmicLess25],
+            },
+            {
+                name: 'Exponential',
+                criteria: [exponentialGreater0_85, exponentialLess10, exponentialLess25],
+            },
+            {
+                name: 'Power',
+                criteria: [powerGreater0_85, powerLess10, powerLess25],
+            },
+        ];
+
+        let bestModel = null;
+        let bestSum = -1; // Initialize with the lowest possible sum
+
+        for (const model of modelCriteria) {
+            const criteriaSum = model.criteria.filter((c) => c === 'Yes').length;
+            if (criteriaSum > bestSum) {
+                bestSum = criteriaSum;
+                bestModel = model.name;
+            }
+        }
+
+        // Display the best model
+        document.getElementById('best-model-name').textContent = bestModel;
+
+    </script>
+</body>
+</html>

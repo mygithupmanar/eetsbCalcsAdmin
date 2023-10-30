@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="PolynomialCalcs_style.css">
+    <title>Your Website</title>
+</head>
+<body>
+    <div class="top-bar">
+        <img class="logo" src="logo.png" alt="logo">
+        <ul>
+            <li><a href="TestData.html">Test data</a></li>
+            <li class="dropdown">
+                <a href="#">Linear</a>
+                <ul class="submenu">
+                    <li><a href="LinearCalcs.html">Linear clacs</a></li>
+                    <li><a href="LinearSum.html">Linear Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Polynomials</a>
+                <ul class="submenu">
+                    <li><a href="PolynomialCalcs.html">Polynomials clacs</a></li>
+                    <li><a href="PolynomialSum.html">Polynomials Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Logarithmic</a>
+                <ul class="submenu">
+                    <li><a href="LogarithmicCalc.html">Logarithmic clacs</a></li>
+                    <li><a href="LogarithmicSum.html">Logarithmic Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Exponential</a>
+                <ul class="submenu">
+                    <li><a href="ExponentialCalcs.html">Exponential clacs</a></li>
+                    <li><a href="ExponentialSum.html">Exponential Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Power</a>
+                <ul class="submenu">
+                    <li><a href="PowerCalcs.html">Power clacs</a></li>
+                    <li><a href="PowerSum.html">Power Sum</a></li>
+                </ul>
+            </li>
+           
+            <li class="dropdown">
+                <a href="#">Others</a>
+                <ul class="submenu">
+                    <li><a href="BestModel.html">Best model</a></li>
+                    <li><a href="PredictedValues.html">Predicted value</a></li>
+                    <li><a href="SateTable.html">Stats table</a></li>
+                    <li><a href="Version.html">Version</a></li>
+                </ul>
+            </li>
+           
+        </ul>
+    </div>
+
+    <h1>Polynomials Clacs</h1>
+
+    <table id="polynomials-table">
+        <thead>
+            <tr>
+                <th>Run</th>
+                <th>X</th>
+                <th>Y</th>
+                <th>x2</th>
+                <th>x3</th>
+                <th>x4</th>
+                <th>xy</th>
+                <th>x2y</th>
+                <th>y^</th>
+                <th>(y^-y)2</th>
+                <th>delta</th>
+                <th>(yi-y~)2</th>
+                <th>CI</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows will be added dynamically here -->
+        </tbody>
+    </table>
+    <table id="field-table">
+        <thead>
+            <tr>
+                <th>Field</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Facility:</td>
+                <td>PLTMG BIMA</td>
+            </tr>
+            <tr>
+                <td>Location:</td>
+                <td>BIMA</td>
+            </tr>
+            <tr>
+                <td>Emission Unit:</td>
+                <td>STACK 1</td>
+            </tr>
+            <tr>
+                <td>Test Dates:</td>
+                <td>7/1/2023</td>
+            </tr>
+            <tr>
+                <td>Emission Limit:</td>
+                <td>15 mg/acm</td>
+            </tr>
+        </tbody>
+    </table>
+    <script>
+
+        
+function updateFieldValues() {
+                        // ... (your field values update code) ...
+                    }
+            function updateFieldValues() {
+            const testDataJSON = localStorage.getItem('testData');
+            // Retrieve and display Facility, Location, Emission Unit, and Test Dates
+            if (testDataJSON) {
+                const testData = JSON.parse(testDataJSON);
+
+                // Display Facility, Location, Emission Unit, and Test Dates
+                document.getElementById('facility-summary').textContent += testData.facility;
+                document.getElementById('location-summary').textContent += testData.location;
+                document.getElementById('emission-unit-summary').textContent += testData.emissionUnit;
+                document.getElementById('test-dates-summary').textContent += testData.testDates;
+                document.getElementById('emission-limit-summary').textContent += testData.emissionLimit;
+            }
+        }
+
+
+        // Retrieve x and y values from the Test Data page
+        const xValuesJSON = localStorage.getItem('xValues');
+        const yValuesJSON = localStorage.getItem('yValues');
+        if (xValuesJSON && yValuesJSON) {
+            const xValues = JSON.parse(xValuesJSON);
+            const yValues = JSON.parse(yValuesJSON);
+
+            // Initialize variables for cumulative sums
+            let S1 = 0;
+            let S2 = 0;
+            let S3 = 0;
+            let S4 = 0;
+            let S5 = 0;
+            let S6 = 0;
+            let S7 = 0;
+            let n = xValues.length;
+
+            // Initialize variables for coefficients
+            let c0, c1, c2, c3, c4, c5;
+            let b0, b1, b2;
+
+            // Initialize variables for CI calculation
+            let tf = 2.262; // Replace with your desired value
+            let cL = 0; // Replace with your desired value
+
+            // Initialize variables for additional calculations
+            let maxXMinusMinY = 0;
+
+            let CIsum=0;
+            let CImean=0;
+
+            // Calculate cumulative sums for coefficients
+            for (let i = 0; i < n; i++) {
+                const x = xValues[i];
+                const y = yValues[i];
+                const x2 = Math.pow(x, 2);
+                const x3 = Math.pow(x, 3);
+                const x4 = Math.pow(x, 4);
+                const xy = x * y;
+                const x2y = x2 * y;
+
+                S1 += x;
+                S2 += x2;
+                S3 += x3;
+                S4 += x4;
+                S5 += y;
+                S6 += x * y;
+                S7 += x2 * y;
+            }
+
+            // Calculate coefficients (b0, b1, b2)
+            const detA = n * S2 * S4 - S2 * S2 * S2 + S1 * S3 * S2 - S3 * S3 * n + S2 * S1 * S3 - S4 * S1 * S1;
+            const D = n * (S2 * S4 - S3 * S3) + S1 * (S3 * S2 - S1 * S4) + S2 * (S1 * S3 -  S2 * S2);
+
+            b0P = (S5 * S2 * S4 + S1 * S3 * S7 + S2 * S6 * S3 - S7 * S2 * S2 - S3 * S3 * S5 - S4 * S6 * S1) / detA;
+            b1P = (n * S6 * S4 + S5 * S3 * S2 + S2 * S1 * S7 - S2 * S6 * S2 - S7 * S3 * n - S4 * S1 * S5) / detA;
+            b2P = (n * S2 * S7 + S1 * S6 * S2 + S5 * S1 * S3 - S2 * S2 * S5 - S3 * S6 * n - S7 * S1 * S1) / detA;
+
+            // Calculate other coefficients
+            c0 = (S2 * S4 - S3 * S3) / D;
+            c1 = (S3 * S2 - S1 * S4) / D;
+            c2 = (S1 * S3 - S2 * S2) / D;
+            c3 = (n * S4 - S2 * S2) / D;
+            c4 = (S1 * S2 - n * S3) / D;
+            c5 = (n * S2 - S1 * S1) / D;
+
+            for (let i = 0; i < n; i++) {
+                const x = xValues[i];
+                const y = yValues[i];
+                const yHat = b0P + b1P * x + b2P * x * x; // Update this line
+                const yHatMinusY2 = Math.pow(yHat - y, 2);
+                cL += yHatMinusY2;
+
+            }
+
+            const Sp = Math.sqrt(1 / (n - 3) * cL); // Sp calculation based on cL
+
+
+            // Initialize tableBody
+            const tableBody = document.querySelector('#polynomials-table tbody');
+
+            // Iterate through the data and calculate and display values
+            for (let i = 0; i < n; i++) {
+
+                const x = xValues[i];
+                const y = yValues[i];
+                const x2 = Math.pow(x, 2);
+                const x3 = Math.pow(x, 3);
+                const x4 = Math.pow(x, 4);
+                const xy = x * y;
+                const x2y = x2 * y;
+                const yHat = b0P + b1P * x + b2P * x * x; // Update this line
+                const yHatMinusY2 = Math.pow(yHat - y, 2);
+                const delta = c0 + 2 * c1 * x + (2 * c2 + c3) * x2 + 2 * c4 * x3 + c5 * x4;
+                const yiMinusYHat2 = Math.pow(y - (1 / n) * S5, 2);
+                const CI = Math.sqrt(delta) * tf * Sp ; // Corrected equation
+
+
+                // Add a row to the table with the calculated values
+                const newRow = `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td>${x}</td>
+                        <td>${y}</td>
+                        <td>${x2.toFixed(2)}</td>
+                        <td>${x3.toFixed(2)}</td>
+                        <td>${x4.toFixed(2)}</td>
+                        <td>${xy.toFixed(2)}</td>
+                        <td>${x2y.toFixed(2)}</td>
+                        <td>${yHat.toFixed(2)}</td>
+                        <td>${yHatMinusY2.toFixed(2)}</td>
+                        <td>${delta.toFixed(2)}</td>
+                        <td>${yiMinusYHat2.toFixed(2)}</td>
+                        <td>${CI.toFixed(2)}</td>
+                    </tr>
+                `;
+
+                tableBody.innerHTML += newRow;
+            }
+
+
+            // Calculate maxXMinusMinY
+            maxXMinusMinY = Math.max(...xValues) - Math.min(...yValues);
+
+            // Add a row for the sums
+            const sumRow = `
+                <tr class="sum-row">            
+                    <td>Sum</td>
+                    <td>${S1.toFixed(2)}</td>
+                    <td>${S5.toFixed(2)}</td>
+                    <td>${S2.toFixed(2)}</td>
+                    <td>${S3.toFixed(2)}</td>
+                    <td>${S4.toFixed(2)}</td>
+                    <td>${S6.toFixed(2)}</td>
+                    <td>${S7.toFixed(2)}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            `;
+
+            tableBody.innerHTML += sumRow;
+
+            // Find the smallest value in the delta column
+            const deltaColumn = document.querySelectorAll('#polynomials-table tbody tr td:nth-child(11)');
+            const deltaValues = Array.from(deltaColumn).map(td => parseFloat(td.textContent));
+            const validDeltaValues = deltaValues.filter(value => !isNaN(value)); // Filter out "NA" values
+            const smallestDelta = Math.min(...validDeltaValues);
+            CImean= tf*Sp*Math.pow(smallestDelta,0.5);
+
+            // Calculate the CI value for the "Minimum>" row
+            const deltaMinimumRow = `
+                <tr>
+                    <td>Minimum&gt;</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>${smallestDelta.toFixed(2)}</td>
+                    <td></td>
+                    <td>${CImean.toFixed(2)}</td>
+                </tr>
+            `;
+
+            tableBody.innerHTML += deltaMinimumRow;
+
+            // Save calculated values to localStorage
+            localStorage.setItem('n', n);
+            localStorage.setItem('S1', S1);
+            localStorage.setItem('S2', S2);
+            localStorage.setItem('S3', S3);
+            localStorage.setItem('S4', S4);
+            localStorage.setItem('S5', S5);
+            localStorage.setItem('S6', S6);
+            localStorage.setItem('S7', S7);
+            localStorage.setItem('detA', detA);
+            localStorage.setItem('b0P', b0P);
+            localStorage.setItem('b1P', b1P);
+            localStorage.setItem('b2P', b2P);
+            localStorage.setItem('Sp', Sp);
+            localStorage.setItem('D', D);
+            localStorage.setItem('c0', c0);
+            localStorage.setItem('c1', c1);
+            localStorage.setItem('c2', c2);
+            localStorage.setItem('c3', c3);
+            localStorage.setItem('c4', c4);
+            localStorage.setItem('c5', c5);
+            localStorage.setItem('tf', tf);
+            localStorage.setItem('cL', cL);
+            localStorage.setItem('CImean', CImean);
+            localStorage.setItem('smallestDelta', smallestDelta);
+
+
+        }
+
+        // Call the function to update field values
+        updateFieldValues();
+
+    </script>
+</body>
+</html>

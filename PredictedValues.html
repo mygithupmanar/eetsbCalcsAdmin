@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="PredictedValues_style.css">
+
+    <title>Your Website</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+    <div class="top-bar">
+        <img class="logo" src="logo.png" alto="logo">
+        <ul>
+            <li><a href="TestData.html">Test data</a></li>
+            <li class="dropdown">
+                <a href="#">Linear</a>
+                <ul class="submenu">
+                    <li><a href="LinearCalcs.html">Linear clacs</a></li>
+                    <li><a href="LinearSum.html">Linear Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Polynomials</a>
+                <ul class="submenu">
+                    <li><a href="PolynomialCalcs.html">Polynomials clacs</a></li>
+                    <li><a href="PolynomialSum.html">Polynomials Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Logarithmic</a>
+                <ul class="submenu">
+                    <li><a href="LogarithmicCalc.html">Logarithmic clacs</a></li>
+                    <li><a href="LogarithmicSum.html">Logarithmic Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Exponential</a>
+                <ul class="submenu">
+                    <li><a href="ExponentialCalcs.html">Exponential clacs</a></li>
+                    <li><a href="ExponentialSum.html">Exponential Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Power</a>
+                <ul class="submenu">
+                    <li><a href="PowerCalcs.html">Power clacs</a></li>
+                    <li><a href="PowerSum.html">Power Sum</a></li>
+                </ul>
+            </li>
+           
+            <li class="dropdown">
+                <a href="#">Others</a>
+                <ul class="submenu">
+                    <li><a href="BestModel.html">Best model</a></li>
+                    <li><a href="PredictedValues.html">Predicted value</a></li>
+                    <li><a href="SateTable.html">Stats table</a></li>
+                    <li><a href="Version.html">Version</a></li>
+                </ul>
+            </li>
+           
+        </ul>
+    </div>
+
+
+    <div class="container">
+        <h1>Predicted PM Concentrations</h1>
+
+        <!-- Table for predicted values -->
+        <table id="predicted-values-table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th>PM Concentrations (y) in mg/acm</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+
+                </tr>
+                <tr>
+                    <th>PM CEMS Response</th>
+                    <th>Linear</th>
+                    <th>Polynomial</th>
+                    <th>Logarithmic</th>
+                    <th>Exponential</th>
+                    <th>Power</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be added dynamically here -->
+            </tbody>
+        </table>
+
+        <!-- Add row and calculate buttons -->
+        <div>
+            <button id="add-row">Add Row</button>
+            <button id="calculate-predictions">Calculate Predictions</button>
+        </div>
+
+    
+        <script>
+            const table = document.getElementById('predicted-values-table');
+            const tbody = table.querySelector('tbody');
+            const addRowButton = document.getElementById('add-row');
+            const calculateButton = document.getElementById('calculate-predictions');
+    
+            // Function to add a new row
+            function addRow() {
+                const newRow = `
+                    <tr>
+                        <td><input type="text" class="x-input" placeholder="Enter PM CEMs Response"></td>
+                        <td class="linear-prediction"></td>
+                        <td class="polynomial-prediction"></td>
+                        <td class="logarithmic-prediction"></td>
+                        <td class="exponential-prediction"></td>
+                        <td class="power-prediction"></td>
+                        <td>
+                            <button class="delete-row">Delete</button>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += newRow;
+            }
+    
+            // Function to delete a row
+            function deleteRow(e) {
+                const row = e.target.closest('tr');
+                if (row) {
+                    row.remove();
+                }
+            }
+    
+            // Function to calculate predictions
+            function calculatePredictions() {
+                const rows = tbody.querySelectorAll('tr');
+    
+                rows.forEach((row) => {
+                    const xInput = row.querySelector('.x-input');
+                    const linearPrediction = row.querySelector('.linear-prediction');
+                    const polynomialPrediction = row.querySelector('.polynomial-prediction');
+                    const logarithmicPrediction = row.querySelector('.logarithmic-prediction');
+                    const exponentialPrediction = row.querySelector('.exponential-prediction');
+                    const powerPrediction = row.querySelector('.power-prediction');
+    
+                    const x = parseFloat(xInput.value);
+    
+                    // Calculate predictions using your equations
+                    // You'll need to replace these with actual equations and coefficients
+                    const b0Li = parseFloat(localStorage.getItem('b0Li') || 0);
+                    const b1Li = parseFloat(localStorage.getItem('b1Li') || 0);
+                    const linearY = (b0Li + b1Li * x).toFixed(2);
+    
+                    const b0P = parseFloat(localStorage.getItem('b0P') || 0);
+                    const b1P = parseFloat(localStorage.getItem('b1P') || 0);
+                    const b2P = parseFloat(localStorage.getItem('b2P') || 0);
+                    const polynomialY = (b0P + b1P * x + b2P * x * x).toFixed(2);
+    
+                    const b0Lo = parseFloat(localStorage.getItem('b0Lo') || 0);
+                    const b1Lo = parseFloat(localStorage.getItem('b1Lo') || 0);
+                    const logarithmicY = (b0Lo + b1Lo * Math.log(x)).toFixed(2);
+    
+                    const b0Ex = parseFloat(localStorage.getItem('b0Ex') || 0);
+                    const b1Ex = parseFloat(localStorage.getItem('b1Ex') || 0);
+                    const exponentialY = (b0Ex * Math.exp(b1Ex * x)).toFixed(2);
+    
+                    const b0Po = parseFloat(localStorage.getItem('b0Po') || 0);
+                    const b1Po = parseFloat(localStorage.getItem('b1Po') || 0);
+                    const powerY = (Math.pow(b0Po * x, b1Po)).toFixed(2);
+    
+                    // Update the table with the calculated predictions
+                    linearPrediction.textContent = linearY;
+                    polynomialPrediction.textContent = polynomialY;
+                    logarithmicPrediction.textContent = logarithmicY;
+                    exponentialPrediction.textContent = exponentialY;
+                    powerPrediction.textContent = powerY;
+                });
+            }
+
+            // Save the data before navigating away from the page
+            window.addEventListener('beforeunload', function () {
+                const rows = tbody.querySelectorAll('tr');
+                const savedData = [];
+
+                rows.forEach((row) => {
+                    const xInput = row.querySelector('.x-input');
+                    const linearPrediction = row.querySelector('.linear-prediction');
+                    const polynomialPrediction = row.querySelector('.polynomial-prediction');
+                    const logarithmicPrediction = row.querySelector('.logarithmic-prediction');
+                    const exponentialPrediction = row.querySelector('.exponential-prediction');
+                    const powerPrediction = row.querySelector('.power-prediction');
+
+                    savedData.push({
+                        x: xInput.value,
+                        linearPrediction: linearPrediction.textContent,
+                        polynomialPrediction: polynomialPrediction.textContent,
+                        logarithmicPrediction: logarithmicPrediction.textContent,
+                        exponentialPrediction: exponentialPrediction.textContent,
+                        powerPrediction: powerPrediction.textContent,
+                    });
+                });
+
+                localStorage.setItem('predictedValues', JSON.stringify(savedData));
+            });
+
+            // Load saved data when the page loads
+            function loadPredictedValues() {
+                const savedData = JSON.parse(localStorage.getItem('predictedValues') || '[]');
+
+                savedData.forEach((data) => {
+                    const newRow = `
+                        <tr>
+                            <td><input type="text" class="x-input" value="${data.x}" placeholder="Enter PM CEMs Response"></td>
+                            <td class="linear-prediction">${data.linearPrediction}</td>
+                            <td class="polynomial-prediction">${data.polynomialPrediction}</td>
+                            <td class="logarithmic-prediction">${data.logarithmicPrediction}</td>
+                            <td class="exponential-prediction">${data.exponentialPrediction}</td>
+                            <td class="power-prediction">${data.powerPrediction}</td>
+                            <td>
+                                <button class="delete-row">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += newRow;
+                });
+            }
+
+            // Call the function to load saved values when the page loads
+            loadPredictedValues();
+
+
+            // Event listeners
+            addRowButton.addEventListener('click', addRow);
+            calculateButton.addEventListener('click', calculatePredictions);
+            tbody.addEventListener('click', (e) => {
+                if (e.target.classList.contains('delete-row')) {
+                    deleteRow(e);
+                }
+            });
+    
+            // Load saved data when the page loads
+            loadSavedData();
+            
+
+        </script>
+    </body>
+    </html>
+    

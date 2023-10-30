@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="LogarithmicSum_style.css">
+    <title>Your Website</title>
+</head>
+<body>
+    <div class="top-bar">
+        <img class="logo" src="logo.png" alt="logo">
+        <ul>
+            <li><a href="TestData.html">Test data</a></li>
+            <li class="dropdown">
+                <a href="#">Linear</a>
+                <ul class="submenu">
+                    <li><a href="LinearCalcs.html">Linear clacs</a></li>
+                    <li><a href="LinearSum.html">Linear Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Polynomials</a>
+                <ul class="submenu">
+                    <li><a href="PolynomialCalcs.html">Polynomials clacs</a></li>
+                    <li><a href="PolynomialSum.html">Polynomials Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Logarithmic</a>
+                <ul class="submenu">
+                    <li><a href="LogarithmicCalc.html">Logarithmic clacs</a></li>
+                    <li><a href="LogarithmicSum.html">Logarithmic Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Exponential</a>
+                <ul class="submenu">
+                    <li><a href="ExponentialCalcs.html">Exponential clacs</a></li>
+                    <li><a href="ExponentialSum.html">Exponential Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Power</a>
+                <ul class="submenu">
+                    <li><a href="PowerCalcs.html">Power clacs</a></li>
+                    <li><a href="PowerSum.html">Power Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Others</a>
+                <ul class="submenu">
+                    <li><a href="BestModel.html">Best model</a></li>
+                    <li><a href="PredictedValues.html">Predicted value</a></li>
+                    <li><a href="SateTable.html">Stats table</a></li>
+                    <li><a href="Version.html">Version</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <h1>Logarithmic Summary</h1>
+
+    <table id="logarithmic-summary-table">
+        <thead>
+            <tr>
+                <th>Variable</th>
+                <th>Equation</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows will be added dynamically here using JavaScript -->
+        </tbody>
+    </table>
+
+    <h2>Chart</h2>
+    <div class="chart-container">
+        <canvas id="chart"></canvas>
+    </div>
+
+    <script>
+        // Place your JavaScript code inside a DOMContentLoaded event listener
+            // Retrieve values of x and y from Test Data page
+            const xValuesJSON = localStorage.getItem('xValues');
+            const yValuesJSON = localStorage.getItem('yValues');
+            const xValues = JSON.parse(xValuesJSON);
+            const yValues = JSON.parse(xValuesJSON);
+
+            
+        
+            // Retrieve values from Logarithmic calculations page
+            const b0Lo = parseFloat(localStorage.getItem('b0'));
+            const b1Lo = parseFloat(localStorage.getItem('b1'));
+            const sxx = parseFloat(localStorage.getItem('sxx'));
+            const syy = parseFloat(localStorage.getItem('syy'));
+            const sxy = parseFloat(localStorage.getItem('sxy'));
+            const sumyHat = parseFloat(localStorage.getItem('sumyHat'));
+            const sumyiHatMinusYiSquared= parseFloat(localStorage.getItem('sumyiHatMinusYiSquared'));
+
+            let yiMinusYMeanSquaredSum = 0;
+
+            const n = xValues.length;
+            const sumY = yValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+            const meanY = sumY / yValues.length;
+            console.log("Mean of y:", meanY);
+
+            
+            const xMean = xValues.reduce((acc, x) => acc + Math.log(x), 0) / xValues.length;
+            const SL = Math.sqrt((1 / (n - 2)) * sumyiHatMinusYiSquared);
+            const tf = 2.228;
+            const nPrime = n;
+            const vf = 1.593; // Replace with your value
+            const EL = 15; // Replace with your value
+            const unPrime = 1.192; // Replace with your value
+            const kt = unPrime * vf;
+            const TI = kt * SL;
+            const TIPercentage = (TI / EL) * 100; // Calculate EL (Emission Limit) or replace it with the actual value
+            const Sy = Math.sqrt(syy / (n - 1));
+            const r2 = 1 - Math.pow(SL, 2) / Math.pow(Sy, 2);
+            const r = Math.sqrt(1 - Math.pow(SL, 2) / Math.pow(Sy, 2));
+            const CI = tf * SL * Math.sqrt(1 / n);
+            const CI_percent = (CI / EL * 100).toFixed(4);
+            const meanyHat = sumyHat / yValues.length;
+
+            // Add rows to the table
+            const tableBody = document.querySelector('#logarithmic-summary-table tbody');
+
+            // Helper function to add rows
+            function addRow(variable, equation, value) {
+                const newRow = `
+                    <tr>
+                        <td>${variable}</td>
+                        <td>${equation}</td>
+                        <td>${value.toFixed(4)}</td>
+                    </tr>
+                `;
+                tableBody.innerHTML += newRow;
+            }
+
+            addRow('n', 'n', n);
+            addRow("x'~", "x'~ = mean of x`", xMean);
+            addRow("Sx'x'", "Sx'x' = Sum((x'i-x'~)^2)", sxx);
+            addRow("y~", "y~ = mean of y", meanY);
+            addRow("Syy", "Syy = Sum((yi-y~)^2)", syy);
+            addRow("Sx'y", "Sx'y = Sum((x'i-x'~)(yi-y~))", sxy);
+            addRow("b0", "b0", b0Lo);
+            addRow("b1", "b1", b1Lo);
+            addRow("SL", "SL = SQRT(1/(n-2)(Sum(yi^-yi)^2))", SL);
+            addRow("y^mean", "y^mean = y^", meanyHat);
+            addRow("tf", "tf = 2.228", 2.228); // Replace with your value
+            addRow("CI", "CI = tf*SL*SQRT(1/n)", 2.228 * SL * Math.sqrt(1 / n)); // Calculate CI based on your formula
+            addRow("Emission Limit", "Emission Limit", EL); // Replace with the actual Emission Limit
+            addRow("CI%", "CI% = CI/EL*100%", (CI / EL) * 100);
+            addRow("n'", "n' = n", nPrime);
+            addRow("vf", "vf = 1.593", vf); // Replace with your value
+            addRow("un'", "un' = 1.192", unPrime); // Replace with your value
+            addRow("kt", "kt = un'*vf", kt);
+            addRow("TI", "TI = kt*SL", TI);
+            addRow("TI%", "TI% = TI/EL*100%", TIPercentage);
+            addRow("Sy", "Sy = SQRT(Syy/(n-1))", Sy);
+            addRow("r2", "r2 = 1-(SL^2/Sy^2)", r2);
+            addRow("r", "r = SQRT((1-SL^2/Sy^2))", r);
+
+            
+            
+        if (xValuesJSON && yValuesJSON) {
+            const xValues = JSON.parse(xValuesJSON);
+            const yValues = JSON.parse(yValuesJSON);
+
+            // Your logarithmic sum calculation and chart creation here
+            const b0 = 1; // Replace with your actual calculation
+            const b1 = 2; // Replace with your actual calculation
+
+            // Ensure Chart is defined in the global scope
+            if (typeof Chart !== 'undefined') {
+                // Create the chart
+                const ctx = document.getElementById('chart').getContext('2d');
+                const chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: xValues.map(x => x.toString()),
+                        datasets: [
+                            {
+                                label: 'Actual Data',
+                                data: yValues,
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1,
+                                fill: false
+                            },
+                            {
+                                label: 'Fitted Data',
+                                data: yValues.map((y, i) => b0 + b1 * Math.log(xValues[i]) + 1),
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 1,
+                                fill: false
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+            } else {
+                console.error('Chart.js is not defined. Make sure you have loaded the Chart.js library.');
+            }
+        }
+
+           
+    </script>
+
+    
+<h3>Criterion Evaluation</h2>
+
+<table id="criterion-table">
+    <thead>
+        <tr>
+            <th>Criterion</th>
+            <th>Actual</th>
+            <th>Allowable</th>
+            <th>Acceptable</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Correlation Coefficient</td>
+            <td id="correlation-actual"></td>
+            <td>>0.85</td>
+            <td id="correlation-acceptable" class="yes-no-cell"></td>
+        </tr>
+        <tr>
+            <td>Confidence Interval (%)</td>
+            <td id="confidence-actual"></td>
+            <td><10%</td>
+            <td id="confidence-acceptable" class="yes-no-cell"></td>
+        </tr>
+        <tr>
+            <td>Tolerance Interval (%)</td>
+            <td id="tolerance-actual"></td>
+            <td><25%</td>
+            <td id="tolerance-acceptable" class="yes-no-cell"></td>
+        </tr>
+    </tbody>
+</table>
+
+<script>
+
+    const correlationCoefficientLogarithmic = r.toFixed(2);
+    const confidenceIntervalLogarithmic = CI_percent;
+    const toleranceIntervalLogarithmic = TIPercentage.toFixed(2);
+
+
+    // Calculate acceptability
+    const correlationAcceptable = correlationCoefficientLogarithmic > 0.85 ? 'Yes' : 'No';
+    const confidenceAcceptable = confidenceIntervalLogarithmic < 10 ? 'Yes' : 'No';
+    const toleranceAcceptable = toleranceIntervalLogarithmic < 25 ? 'Yes' : 'No';
+    
+    // Display the actual values and acceptability
+    document.getElementById('correlation-actual').textContent = correlationCoefficientLogarithmic;
+    document.getElementById('confidence-actual').textContent = confidenceIntervalLogarithmic + '%';
+    document.getElementById('tolerance-actual').textContent = toleranceIntervalLogarithmic + '%';
+    document.getElementById('correlation-acceptable').textContent = correlationAcceptable;
+    document.getElementById('confidence-acceptable').textContent = confidenceAcceptable;
+    document.getElementById('tolerance-acceptable').textContent = toleranceAcceptable;
+
+    // Check if the "Acceptable" column has no value and apply red background
+    const acceptableCells = document.querySelectorAll('.yes-no-cell');
+    acceptableCells.forEach((cell) => {
+        if (cell.textContent === 'No') {
+            cell.style.backgroundColor = '#FFCCCC';
+        } else {
+            cell.style.backgroundColor = '#94C691';
+        }
+    });
+
+    localStorage.setItem('correlationCoefficientLogarithmic', correlationCoefficientLogarithmic);
+    localStorage.setItem('confidenceIntervalLogarithmic', confidenceIntervalLogarithmic);
+    localStorage.setItem('toleranceIntervalLogarithmic', toleranceIntervalLogarithmic);
+    localStorage.setItem('b1Lo', b1Lo);
+    localStorage.setItem('b0Lo', b0Lo);
+
+
+
+</script>
+
+</body>
+</html>

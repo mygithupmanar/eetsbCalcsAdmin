@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="StateTable_style.css">
+
+    <title>Your Website</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="top-bar">
+        <img class="logo" src="logo.png" alt="logo">
+        <ul>
+            <li><a href="TestData.html">Test data</a></li>
+            <li class="dropdown">
+                <a href="#">Linear</a>
+                <ul class="submenu">
+                    <li><a href="LinearCalcs.html">Linear clacs</a></li>
+                    <li><a href="LinearSum.html">Linear Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Polynomials</a>
+                <ul class="submenu">
+                    <li><a href="PolynomialCalcs.html">Polynomials clacs</a></li>
+                    <li><a href="PolynomialSum.html">Polynomials Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Logarithmic</a>
+                <ul class="submenu">
+                    <li><a href="LogarithmicCalc.html">Logarithmic clacs</a></li>
+                    <li><a href="LogarithmicSum.html">Logarithmic Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Exponential</a>
+                <ul class="submenu">
+                    <li><a href="ExponentialCalcs.html">Exponential clacs</a></li>
+                    <li><a href="ExponentialSum.html">Exponential Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Power</a>
+                <ul class="submenu">
+                    <li><a href="PowerCalcs.html">Power clacs</a></li>
+                    <li><a href="PowerSum.html">Power Sum</a></li>
+                </ul>
+            </li>
+
+            <li class="dropdown">
+                <a href="#">Others</a>
+                <ul class="submenu">
+                    <li><a href="BestModel.html">Best model</a></li>
+                    <li><a href="PredictedValues.html">Predicted value</a></li>
+                    <li><a href="StatsTable.html">Stats table</a></li>
+                    <li><a href="Version.html">Version</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <h1>State Table</h1>
+
+        <!-- Table for statistics values -->
+        <table id="state-table">
+            <thead>
+                <tr>
+                    <th>df</th>
+                    <th>tf</th>
+                    <th>vf</th>
+                    <th>un' (75)</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be added dynamically here -->
+            </tbody>
+        </table>
+
+        <!-- Add row and save buttons -->
+        <div>
+            <button id="add-row">Add Row</button>
+        </div>
+    </div>
+
+    <script>
+        const table = document.getElementById('state-table');
+        const tbody = table.querySelector('tbody');
+        const addRowButton = document.getElementById('add-row');
+
+        // Function to add a new row
+        function addRow() {
+            const newRow = `
+                <tr>
+                    <td><input type="text" class="df-input" placeholder="Enter df"></td>
+                    <td><input type="text" class="tf-input" placeholder="Enter tf"></td>
+                    <td><input type="text" class="vf-input" placeholder="Enter vf"></td>
+                    <td><input type="text" class="un-input" placeholder="Enter un (75)"></td>
+                    <td>
+                        <button class="delete-row">Delete</button>
+                    </td>
+                </tr>
+            `;
+            tbody.innerHTML += newRow;
+        }
+
+        // Function to delete a row
+        function deleteRow(e) {
+            const row = e.target.closest('tr');
+            if (row) {
+                row.remove();
+            }
+        }
+
+        // Save the data before navigating away from the page
+        window.addEventListener('beforeunload', function () {
+            const rows = tbody.querySelectorAll('tr');
+            const savedData = [];
+
+            rows.forEach((row) => {
+                const dfInput = row.querySelector('.df-input');
+                const tfInput = row.querySelector('.tf-input');
+                const vfInput = row.querySelector('.vf-input');
+                const unInput = row.querySelector('.un-input');
+
+                savedData.push({
+                    df: dfInput.value,
+                    tf: tfInput.value,
+                    vf: vfInput.value,
+                    un: unInput.value,
+                });
+            });
+
+            localStorage.setItem('stateTableData', JSON.stringify(savedData));
+        });
+
+        // Load saved data when the page loads
+        function loadStatsTableData() {
+            const savedData = JSON.parse(localStorage.getItem('stateTableData') || '[]');
+
+            savedData.forEach((data) => {
+                const newRow = `
+                    <tr>
+                        <td><input type="text" class="df-input" value="${data.df}" placeholder="Enter df"></td>
+                        <td><input type="text" class="tf-input" value="${data.tf}" placeholder="Enter tf"></td>
+                        <td><input type="text" class="vf-input" value="${data.vf}" placeholder="Enter vf"></td>
+                        <td><input type="text" class="un-input" value="${data.un}" placeholder="Enter un (75)"></td>
+                        <td>
+                            <button class="delete-row">Delete</button>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += newRow;
+            });
+        }
+
+        // Call the function to load saved values when the page loads
+        loadStatsTableData();
+
+        // Event listeners
+        addRowButton.addEventListener('click', addRow);
+        tbody.addEventListener('click', (e) => {
+            if (e.target.classList.contains('delete-row')) {
+                deleteRow(e);
+            }
+        });
+    </script>
+</body>
+</html>

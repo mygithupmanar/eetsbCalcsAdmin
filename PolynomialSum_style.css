@@ -1,0 +1,260 @@
+/* Style for the top bar menu */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.top-bar {
+    background-color: hwb(0 100% 0%);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); /* Add a shadow */
+    padding: 7px;
+    display: flex;
+    justify-content: space-between; /* Move menu items to the right */
+    align-items: center; /* Vertically center items */
+}
+
+.logo {
+    cursor: pointer;
+    max-width: 90px; /* Adjust the maximum width to decrease the size */
+    height: auto; /* Maintain the aspect ratio */
+    margin-left: 50px; /* Add left margin to the logo */
+}
+
+.top-bar ul {
+    list-style-type: none;
+    padding: 5px;
+    color: #fff;
+    font-size: 13px;
+    margin-right: 350px;
+    display: flex;
+}
+
+.top-bar li {
+    padding: 10px;
+    margin: 0;
+    display: inline-block;
+    padding: 10px; /* Adjust the padding to center the items vertically */
+    line-height: 20px; /* Adjust the line-height to center the items vertically */
+    position: relative; /* Add relative positioning for pseudo-element */
+}
+
+.top-bar a {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+}
+
+/* Add a line under each menu item on hover */
+.top-bar li:hover::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background-color: #52a594; /* Change the line color here */
+    bottom: 0;
+    left: 0;
+}
+
+/* Style for the dropdown menu */
+.dropdown {
+    position: relative;
+}
+
+.dropdown .submenu {
+    display: none;
+    position: absolute;
+    background-color:hwb(0 100% 0%);
+    list-style-type: none;
+    padding: 0;
+    margin:5px; /* Add margin-top to move the submenu down */
+}
+
+.dropdown:hover .submenu {
+    display: block;
+}
+
+.dropdown .submenu li {
+    padding: 10px;
+    width: 130px;
+    background: transparent;
+    border-radius: 0;
+    text-align: center;
+}
+
+.dropdown .submenu a {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+}
+
+
+
+/* Hover effect for top-level menu items */
+.top-bar li:hover {
+    border-radius: 50px;
+    height: 35px;
+    align-items: center;
+    padding: 10px; /* Adjust the padding to center the items vertically */
+    line-height: 20px; /* Adjust the line-height to center the items vertically */
+}
+
+
+
+/* Reset some default styles for a cleaner look */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h1 {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 24px;
+}
+
+/* Style for the table */
+ #polynomials-summary {
+    margin: 20px auto;
+    border-collapse: collapse;
+    width: 80%;
+    background-color: rgb(241, 241, 241);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    overflow:hidden;
+    border-radius: 10px;
+}
+
+#polynomials-summary th,
+#polynomials-summary td {
+    padding: 8px; /* Add padding to table cells */
+    text-align: center;
+}
+
+#polynomials-summary th {
+    background-color: #262626;
+    color: rgb(255, 255, 255);
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    font-weight: 900;
+    box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#polynomials-summary tr:nth-child(even) {
+    background-color: #fff;
+}
+
+/* Style the table rows on hover */
+#polynomials-summary tbody tr:hover {
+    background-color: #d4d4d4;
+}
+
+
+h2{
+    text-align: center;
+    font-weight:medium;
+    font-size: 20px;
+    margin-bottom: 30px;
+    margin-top: 30px;
+}
+
+/* Add this CSS to your existing stylesheet or create a new .css file */
+#criterion-table {
+    margin: 20px auto;
+    border-collapse: collapse;
+    width: 80%;
+    background-color: rgb(241, 241, 241);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    overflow:hidden;
+    border-radius: 10px;
+}
+
+#criterion-table th,
+#criterion-table td {
+    padding: 8px;
+    text-align: center;
+}
+
+#criterion-table th {
+    background-color: #262626;
+    color: rgb(255, 255, 255);
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    font-weight: 900;
+    box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+#criterion-table tr:nth-child(even) {
+    background-color: #fff;
+}
+
+/* Style the table rows on hover */
+#criterion-table tbody tr:hover {
+    background-color: #d4d4d4;
+}
+
+
+h3{
+    text-align: center;
+    font-weight:medium;
+    font-size: 20px;
+    margin-bottom: 30px;
+    margin-top: 30px;
+}
+
+
+/* Style for the additional table */
+#additional-table {
+    margin: 20px auto;
+    border-collapse: collapse;
+    width: 80%;
+    background-color: rgb(241, 241, 241);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    overflow:hidden;
+    border-radius: 10px;
+}
+
+#additional-table th,
+#criterion-table td {
+    padding: 8px;
+    text-align: center;
+}
+
+/* Style for the table headers */
+#additional-table th {
+    background-color: #262626;
+    color: rgb(255, 255, 255);
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    font-weight: 900;
+    box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#additional-table tr:nth-child(even) {
+    background-color: #fff;
+}
+
+/* Style the table rows on hover */
+#additional-table tbody tr:hover {
+    background-color: #d4d4d4;
+}
+
+/* Style for the table cells */
+#additional-table td {
+    padding: 8px;
+    text-align: left;
+}
+/* Add custom CSS to style the chart container */
+.chart-container {
+    width: 80%; /* Set the desired width */
+    max-width: 1000px; /* Set a max width to prevent it from becoming too wide */
+    height: 400px;
+    padding : 15px;
+    margin: 0 auto; /* Center the chart container horizontally */
+}
+
+/* Style the chart title */
+h2 {
+    text-align: center;
+    font-size: 24px;
+}

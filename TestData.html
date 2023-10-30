@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="TestData_style.css">
+
+    <title>Your Website</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+    <div class="top-bar">
+        <img class="logo" src="logo.png" alto="logo">
+        <ul>
+            <li><a href="TestData.html">Test data</a></li>
+            <li class="dropdown">
+                <a href="#">Linear</a>
+                <ul class="submenu">
+                    <li><a href="LinearCalcs.html">Linear clacs</a></li>
+                    <li><a href="LinearSum.html">Linear Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Polynomials</a>
+                <ul class="submenu">
+                    <li><a href="PolynomialCalcs.html">Polynomials clacs</a></li>
+                    <li><a href="PolynomialSum.html">Polynomials Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Logarithmic</a>
+                <ul class="submenu">
+                    <li><a href="LogarithmicCalc.html">Logarithmic clacs</a></li>
+                    <li><a href="LogarithmicSum.html">Logarithmic Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Exponential</a>
+                <ul class="submenu">
+                    <li><a href="ExponentialCalcs.html">Exponential clacs</a></li>
+                    <li><a href="ExponentialSum.html">Exponential Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Power</a>
+                <ul class="submenu">
+                    <li><a href="PowerCalcs.html">Power clacs</a></li>
+                    <li><a href="PowerSum.html">Power Sum</a></li>
+                </ul>
+            </li>
+           
+            <li class="dropdown">
+                <a href="#">Others</a>
+                <ul class="submenu">
+                    <li><a href="BestModel.html">Best model</a></li>
+                    <li><a href="PredictedValues.html">Predicted value</a></li>
+                    <li><a href="SateTable.html">Stats table</a></li>
+                    <li><a href="Version.html">Version</a></li>
+                </ul>
+            </li>
+           
+        </ul>
+    </div>
+
+
+    <div class="container">
+        <h1>Correlation Test PM CEMS and reference method test data</h1>
+
+        <table id="data-table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>PM CEMS Response</th>
+                    <th>PM Concentrations</th>
+                    <th></th>
+                </tr>
+              <tr>
+                <th>No</th>
+                <th>X</th>
+                <th>Y</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Rows will be added dynamically here -->
+            </tbody>
+          </table>
+        
+          <div class="button-container">
+            <!-- Add an "Add Row" button -->
+            <button id="add-row">Add Row</button>
+            <!-- Add a "Convert to TXT" button -->
+            <button id="convert-to-txt-button">Convert to TXT</button>
+            <button id="calculate">Calculate</button>
+        </div>
+
+
+          <!-- Chart on the top right -->
+    <div class="chart-container">
+        <canvas id="chart"></canvas>
+        </div>
+
+        </div>
+
+
+        <table id="field-table">
+            <thead>
+                <tr>
+                    <th>Field</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Facility:</td>
+                    <td>PLTMG BIMA</td>
+                </tr>
+                <tr>
+                    <td>Location:</td>
+                    <td>BIMA</td>
+                </tr>
+                <tr>
+                    <td>Emission Unit:</td>
+                    <td>STACK 1</td>
+                </tr>
+                <tr>
+                    <td>Test Dates:</td>
+                    <td>7/1/2023</td>
+                </tr>
+                <tr>
+                    <td>Emission Limit:</td>
+                    <td>15 mg/acm</td>
+                </tr>
+            </tbody>
+        </table>            
+        
+
+
+
+      <script>
+  const dataTable = document.getElementById('data-table');
+  const tbody = dataTable.querySelector('tbody');
+  const addRowButton = document.getElementById('add-row');
+  let rowCount = 0;
+
+  // Function to add a new row
+  function addRow() {
+    rowCount++;
+    const newRow = `
+      <tr>
+        <td>${rowCount}</td>
+        <td><input type="text" name="x[]"></td>
+        <td><input type="text" name="y[]"></td>
+        <td><button class="delete-row">Delete</button></td>
+      </tr>
+    `;
+    tbody.innerHTML += newRow;
+  }
+
+  // Function to delete a row
+  function deleteRow(e) {
+    const row = e.target.closest('tr');
+    if (row) {
+      row.remove();
+      updateRowNumbers();
+    }
+  }
+
+  function deleteRow(e) {
+    // Use the confirm dialog to ask for confirmation
+    const confirmed = confirm("Are you sure you want to delete this row?");
+    if (confirmed) {
+      const row = e.target.closest('tr');
+      if (row) {
+        row.remove();
+        updateRowNumbers();
+      }
+    }
+  }
+
+  // Function to update row numbers
+  function updateRowNumbers() {
+    const rows = tbody.querySelectorAll('tr');
+    rowCount = 0;
+    rows.forEach((row, index) => {
+      rowCount++;
+      row.querySelector('td:first-child').textContent = rowCount;
+    });
+  }
+
+  // Event listeners
+  addRowButton.addEventListener('click', addRow);
+  tbody.addEventListener('click', (e) => {
+    if (e.target.classList.contains('delete-row')) {
+      deleteRow(e);
+    }
+  });
+</script>
+
+<script>
+    // Function to convert and download the entered data as a TXT file
+function convertToTXT() {
+    const dataRows = [];
+    const tableRows = document.querySelectorAll('#data-table tbody tr');
+
+    // Iterate through the table rows and extract the x and y values
+    tableRows.forEach((row) => {
+        const xInput = row.querySelector('input[name="x[]"]');
+        const yInput = row.querySelector('input[name="y[]"]');
+        if (xInput && yInput) {
+            const x = xInput.value;
+            const y = yInput.value;
+            dataRows.push(`${x}\t${y}`);
+        }
+    });
+
+    // Create a data string with the rows
+    const dataString = dataRows.join('\n');
+
+    // Create a Blob with the data
+    const blob = new Blob([dataString], { type: 'text/plain' });
+
+    // Create a URL for the Blob
+    const url = URL.createObjectURL(blob);
+
+    // Create an "a" element for downloading the file
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'data.txt';
+    a.style.display = 'none';
+
+    // Append the "a" element to the document and trigger the download
+    document.body.appendChild(a);
+    a.click();
+
+    // Remove the "a" element
+    document.body.removeChild(a);
+}
+
+// Event listener for the "Convert to TXT" button
+const convertToTXTButton = document.getElementById('convert-to-txt-button');
+convertToTXTButton.addEventListener('click', convertToTXT);
+
+</script>
+
+
+<script>
+        let myChart = null;
+        const calculateButton = document.getElementById('calculate');
+        const chartCanvas = document.getElementById('chart');
+        const xValues = [];
+        const yValues = [];
+      
+        calculateButton.addEventListener('click', () => {
+  // Get the values of x and y from the table
+  const xValues = [];
+  const yValues = [];
+  const tableRows = document.querySelectorAll('#data-table tbody tr');
+
+  tableRows.forEach((row) => {
+    const xInput = row.querySelector('input[name="x[]"]');
+    const yInput = row.querySelector('input[name="y[]"]');
+    if (xInput && yInput) {
+      xValues.push(parseFloat(xInput.value));
+      yValues.push(parseFloat(yInput.value));
+    }
+  });
+      
+  // Store x and y values in localStorage
+  localStorage.setItem('xValues', JSON.stringify(xValues));
+  localStorage.setItem('yValues', JSON.stringify(yValues));    
+      
+          // Create a chart using Chart.js
+          const ctx = chartCanvas.getContext('2d');
+          const data = {
+            labels: xValues,
+            datasets: [
+              {
+                label: 'Y Values',
+                data: yValues,
+                borderColor: 'rgb(75, 192, 192)',
+                borderWidth: 2,
+                fill: false,
+              },
+            ],
+          };
+      
+        const config = {
+        type: 'line',
+        data: data,
+        options: {
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'PM CEMS', // X-axis label
+                    },
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'PM Concentration', // Y-axis label
+                    },
+                },
+            },
+        },
+    };
+    // Destroy the existing chart if it exists
+    if (myChart) {
+        myChart.destroy();
+    }
+
+    // Create a new chart
+    myChart = new Chart(ctx, config);
+
+        });
+
+        
+
+         // Function to create or update the chart
+         function updateChart() {
+            // Get the values of x and y from the table and populate xValues and yValues arrays
+            const tableRows = document.querySelectorAll('#data-table tbody tr');
+            xValues.length = 0; // Clear existing data
+            yValues.length = 0; // Clear existing data
+
+            tableRows.forEach((row) => {
+                const xInput = row.querySelector('input[name="x[]"]');
+                const yInput = row.querySelector('input[name="y[]"]');
+                if (xInput && yInput) {
+                    xValues.push(parseFloat(xInput.value));
+                    yValues.push(parseFloat(yInput.value));
+                }
+            });
+
+            // Create a chart using Chart.js
+            const ctx = chartCanvas.getContext('2d');
+            const data = {
+                labels: xValues,
+                datasets: [
+                    {
+                        label: 'Y Values',
+                        data: yValues,
+                        borderColor: 'rgb(75, 192, 192)',
+                        borderWidth: 2,
+                        fill: false,
+                    },
+                ],
+            };
+
+            const config = {
+                type: 'line',
+                data: data,
+            };
+
+            // Destroy the existing chart if it exists
+            if (myChart) {
+                myChart.destroy();
+            }
+
+            // Create a new chart
+            myChart = new Chart(ctx, config);
+        }
+
+        tbody.addEventListener('click', (e) => {
+            if (e.target.classList.contains('delete-row')) {
+                deleteRow(e);
+                updateChart(); // Call the function to update the chart after deleting a row
+            }
+        });
+
+        // Initialize the chart
+        updateChart();
+      </script>
+
+<!-- Add a Save button for the fields and data table -->
+<button id="save-data-button">Save Data</button>
+
+<script>
+    // Function to handle saving data table values
+    function saveDataTable() {
+        const xValues = [];
+        const yValues = [];
+        const tableRows = document.querySelectorAll('#data-table tbody tr');
+
+        tableRows.forEach((row) => {
+            const xInput = row.querySelector('input[name="x[]"]');
+            const yInput = row.querySelector('input[name="y[]"]');
+            if (xInput && yInput) {
+                xValues.push(parseFloat(xInput.value));
+                yValues.push(parseFloat(yInput.value));
+            }
+        });
+
+        // Save x and y values in localStorage
+        localStorage.setItem('xValues', JSON.stringify(xValues));
+        localStorage.setItem('yValues', JSON.stringify(yValues));
+    }
+
+    // Add an event listener to the Save Table Data button
+    const saveDataButton = document.getElementById('save-data-button');
+    saveDataButton.addEventListener('click', () => {
+        saveDataTable(); // Call the function to save data table values
+        updateChart(); // Call the function to update and save the chart
+    });
+
+    // Load saved data table values when the page loads
+    function loadDataValues() {
+        const xValuesJSON = localStorage.getItem('xValues');
+        const yValuesJSON = localStorage.getItem('yValues');
+        if (xValuesJSON && yValuesJSON) {
+            const xValues = JSON.parse(xValuesJSON);
+            const yValues = JSON.parse(yValuesJSON);
+
+            // Clear existing rows
+            tbody.innerHTML = '';
+
+            // Repopulate the data table with saved values
+            for (let i = 0; i < xValues.length; i++) {
+                rowCount++;
+                const newRow = `
+                    <tr>
+                        <td>${rowCount}</td>
+                        <td><input type="text" name="x[]" value="${xValues[i]}"></td>
+                        <td><input type="text" name="y[]" value="${yValues[i]}"></td>
+                        <td><button class="delete-row">Delete</button></td>
+                    </tr>
+                `;
+                tbody.innerHTML += newRow;
+            }
+
+            updateChart(); // Update the chart with loaded values
+        }
+    }
+
+    // Call the function to load saved values when the page loads
+    loadDataValues();
+</script>
+
+</body>
+</html>
+

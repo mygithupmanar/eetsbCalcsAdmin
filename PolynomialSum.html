@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="PolynomialSum_style.css">
+    <title>Your Website</title>
+</head>
+<body>
+    <div class="top-bar">
+        <img class="logo" src="logo.png" alto="logo">
+        <ul>
+            <li><a href="TestData.html">Test data</a></li>
+            <li class="dropdown">
+                <a href="#">Linear</a>
+                <ul class="submenu">
+                    <li><a href="LinearCalcs.html">Linear clacs</a></li>
+                    <li><a href="LinearSum.html">Linear Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Polynomials</a>
+                <ul class="submenu">
+                    <li><a href="PolynomialCalcs.html">Polynomials clacs</a></li>
+                    <li><a href="PolynomialSum.html">Polynomials Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Logarithmic</a>
+                <ul class="submenu">
+                    <li><a href="LogarithmicCalc.html">Logarithmic clacs</a></li>
+                    <li><a href="LogarithmicSum.html">Logarithmic Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Exponential</a>
+                <ul class="submenu">
+                    <li><a href="ExponentialCalcs.html">Exponential clacs</a></li>
+                    <li><a href="ExponentialSum.html">Exponential Sum</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Power</a>
+                <ul class="submenu">
+                    <li><a href="PowerCalcs.html">Power clacs</a></li>
+                    <li><a href="PowerSum.html">Power Sum</a></li>
+                </ul>
+            </li>
+           
+            <li class="dropdown">
+                <a href="#">Others</a>
+                <ul class="submenu">
+                    <li><a href="BestModel.html">Best model</a></li>
+                    <li><a href="PredictedValues.html">Predicted value</a></li>
+                    <li><a href="SateTable.html">Stats table</a></li>
+                    <li><a href="Version.html">Version</a></li>
+                </ul>
+            </li>
+           
+        </ul>
+    </div>
+    <h1>Polynomials Summary</h1>
+
+    <table id="polynomials-summary">
+        <thead>
+            <tr>
+                <th>Variable</th>
+                <th>Equation</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows will be added dynamically here -->
+        </tbody>
+    </table>
+
+    <h2>Chart</h2>
+    <div class="chart-container">
+        <canvas id="chart"></canvas>
+    </div>
+
+    <script>
+        // Retrieve variables and values from the Polynomial Calcs page
+        const n = parseFloat(localStorage.getItem('n') || 0);
+        const S1 = parseFloat(localStorage.getItem('S1') || 0);
+        const S2 = parseFloat(localStorage.getItem('S2') || 0);
+        const S3 = parseFloat(localStorage.getItem('S3') || 0);
+        const S4 = parseFloat(localStorage.getItem('S4') || 0);
+        const S5 = parseFloat(localStorage.getItem('S5') || 0);
+        const S6 = parseFloat(localStorage.getItem('S6') || 0);
+        const S7 = parseFloat(localStorage.getItem('S7') || 0);
+        const detA = parseFloat(localStorage.getItem('detA') || 0);
+        const b0P = parseFloat(localStorage.getItem('b0P') || 0);
+        const b1P = parseFloat(localStorage.getItem('b1P') || 0);
+        const b2P = parseFloat(localStorage.getItem('b2P') || 0);
+        const Sp = parseFloat(localStorage.getItem('Sp') || 0);
+        const D = parseFloat(localStorage.getItem('D') || 0);
+        const C0 = parseFloat(localStorage.getItem('c0') || 0);
+        const C1 = parseFloat(localStorage.getItem('c1') || 0);
+        const C2 = parseFloat(localStorage.getItem('c2') || 0);
+        const C3 = parseFloat(localStorage.getItem('c3') || 0);
+        const C4 = parseFloat(localStorage.getItem('c4') || 0);
+        const C5 = parseFloat(localStorage.getItem('c5') || 0);
+        const tf = parseFloat(localStorage.getItem('tf') || 0);
+        const CImean = parseFloat(localStorage.getItem('CImean') || 0);
+        const smallestDelta = parseFloat(localStorage.getItem('smallestDelta') || 0);
+
+        
+
+        // Calculate additional values
+        const EL = 15;
+        const CI_percent = (CImean / EL * 100).toFixed(4);
+        const vf = 1.645;
+        const un_prime = 1.214;
+        const n_prime = 1 / smallestDelta;
+        const kT = (un_prime * vf).toFixed(4);
+        const TI = (kT * Sp).toFixed(4);
+        const TI_percent = ((TI / EL) * 100).toFixed(4);
+
+        // Calculate y~
+        const yValuesJSON = localStorage.getItem('yValues');
+        const yValues = JSON.parse(yValuesJSON);
+        const ySum = yValues.reduce((sum, y) => sum + y, 0);
+        const yTilde = (ySum / n).toFixed(4);
+
+        // Calculate Sy
+        const syNumerator = yValues.reduce((sum, y) => sum + Math.pow(y - yTilde, 2), 0);
+        const sy = Math.sqrt(syNumerator / (n - 1)).toFixed(4);
+
+        // Calculate r2 and r
+        const r2 = (1 - (Math.pow(Sp, 2) / Math.pow(sy, 2))).toFixed(4);
+        const r = Math.sqrt(1 - (Math.pow(Sp, 2) / Math.pow(sy, 2))).toFixed(4);
+
+        // Determine if b2 > 0
+        const b2_positive = (b2P > 0) ? 'Yes' : 'No';
+
+        // Calculate y
+        const y = ((-b1P) / (2 * b2P)).toFixed(4);
+
+        // Create an array of variables and their corresponding equations
+        const variables = [
+            "n",
+            "S1",
+            "S2",
+            "S3",
+            "S4",
+            "S5",
+            "S6",
+            "S7",
+            "det A",
+            "b0",
+            "b1",
+            "b2",
+            "Sp",
+            "D",
+            "C0",
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C5",
+            "tf",
+            "EL",
+            "CI",
+            "CI%",
+            "vf",
+            "un'",
+            "n'",
+            "kT",
+            "TI",
+            "TI%",
+            "y~",
+            "Sy",
+            "r2",
+            "r",
+            "b2 > 0",
+        ];
+
+        const equations = [
+            "Number of data points =",
+            "S1 = Sum (xi) =",
+            "S2 = Sum (xi2) =",
+            "S3 = Sum (xi3) =",
+            "S4 = Sum (xi4) =",
+            "S5 = Sum (yi) =",
+            "S6 = Sum (xiyi) =",
+            "S7 = Sum (xi2yi) =",
+            "det A = nS2S4-S2S2S2+S1S3S2-S3S3n+S2S1S3-S4S1S1 =",
+            "b0 = (S5S2S4+S1S3S7+S2S6S3-S7S2S2-S3S3S5-S4S6S1)/det A =",
+            "b1 = (nS6S4+S5S3S2+S2S1S7-S2S6S2-S7S3n-S4S1S5)/det A =",
+            "b2 = (nS2S7+S1S6S2+S5S1S3-S2S2S5-S3S6n-S7S1S1)/det A =",
+            "Sp = Sqrt((1/(n-3)Sum of (y^-Y)2) =",
+            "D = n(S2S4-S32)+S1(S3S2-S1S4)+S2(S1S3-S22) =",
+            "C0 = (S2S4-S32)/D =",
+            "C1 = (S3S2-S1S4)/D =",
+            "C2 = (S1S3-S22)/D =",
+            "C3 = (nS4-S22)/D =",
+            "C4 = (S1S2-nS3)/D =",
+            "C5 = (nS2-S12)/D =",
+            "tf from table =",
+            "Emission Limit =",
+            "CI = tf*Sp *sqrt(delta-min) =",
+            "CI% = CI/EL*100 =",
+            "vf from table =",
+            "un' from table =",
+            "n' = 1/delta =",
+            "kt = un'*vf =",
+            "TI = kt*sp =",
+            "TI% = TI/EL *100% =",
+            "y~ = 1/n*(Sum of (yi)) =",
+            "Sy = sqrt(Sum of ( yi-y~)^2/(n-1) =",
+            "r2 = 1-(Sp^2/Sy^2) =",
+            "r = sqrt((1-Sp^2/Sy^2)) =",
+            "b2 > 0?",
+            "y = -b1/2b2 =",
+        ];
+
+        // Create an array of corresponding values
+        const values = [
+            n,
+            S1.toFixed(2),
+            S2.toFixed(2),
+            S3.toFixed(2),
+            S4.toFixed(2),
+            S5.toFixed(2),
+            S6.toFixed(2),
+            S7.toFixed(2),
+            detA.toFixed(2),
+            b0P.toFixed(2),
+            b1P.toFixed(2),
+            b2P.toFixed(2),
+            Sp.toFixed(2),
+            D.toFixed(2),
+            C0.toFixed(2),
+            C1.toFixed(2),
+            C2.toFixed(2),
+            C3.toFixed(2),
+            C4.toFixed(2),
+            C5.toFixed(2),
+            tf.toFixed(2),
+            EL.toFixed(2),
+            CImean.toFixed(2),
+            CI_percent,
+            vf.toFixed(2),
+            un_prime.toFixed(2),
+            n_prime.toFixed(2),
+            kT,
+            TI,
+            TI_percent,
+            yTilde,
+            sy,
+            r2,
+            r,
+            b2_positive,
+        ];
+
+        // Add rows to the summary table
+        const tableBody = document.querySelector('#polynomials-summary tbody');
+        for (let i = 0; i < variables.length; i++) {
+            const newRow = `
+                <tr>
+                    <td>${variables[i]}</td>
+                    <td>${equations[i]}</td>
+                    <td>${values[i]}</td>
+                </tr>
+            `;
+            tableBody.innerHTML += newRow;
+        }
+    </script>
+
+
+<h2>Criterion Evaluation</h2>
+
+<table id="criterion-table">
+    <thead>
+        <tr>
+            <th>Criterion</th>
+            <th>Actual</th>
+            <th>Allowable</th>
+            <th>Acceptable</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Correlation Coefficient</td>
+            <td id="correlation-actual"></td>
+            <td>>0.85</td>
+            <td id="correlation-acceptable" class="yes-no-cell"></td>
+        </tr>
+        <tr>
+            <td>Confidence Interval (%)</td>
+            <td id="confidence-actual"></td>
+            <td><10%</td>
+            <td id="confidence-acceptable" class="yes-no-cell"></td>
+        </tr>
+        <tr>
+            <td>Tolerance Interval (%)</td>
+            <td id="tolerance-actual"></td>
+            <td><25%</td>
+            <td id="tolerance-acceptable" class="yes-no-cell"></td>
+        </tr>
+    </tbody>
+</table>
+
+<script>
+    // Calculate the actual values
+    const correlationCoefficientPolynomial = r;
+    const confidenceIntervalPolynomial = CI_percent;
+    const toleranceIntervalPolynomial = TI_percent;
+
+    // Calculate acceptability
+    const correlationAcceptable = correlationCoefficientPolynomial > 0.85 ? 'Yes' : 'No';
+    const confidenceAcceptable = confidenceIntervalPolynomial < 10 ? 'Yes' : 'No';
+    const toleranceAcceptable = toleranceIntervalPolynomial < 25 ? 'Yes' : 'No';
+    
+    // Display the actual values and acceptability
+    document.getElementById('correlation-actual').textContent = correlationCoefficientPolynomial;
+    document.getElementById('confidence-actual').textContent = confidenceIntervalPolynomial + '%';
+    document.getElementById('tolerance-actual').textContent = toleranceIntervalPolynomial + '%';
+    document.getElementById('correlation-acceptable').textContent = correlationAcceptable;
+    document.getElementById('confidence-acceptable').textContent = confidenceAcceptable;
+    document.getElementById('tolerance-acceptable').textContent = toleranceAcceptable;
+
+    // Check if the "Acceptable" column has no value and apply red background
+    const acceptableCells = document.querySelectorAll('.yes-no-cell');
+    acceptableCells.forEach((cell) => {
+        if (cell.textContent === 'No') {
+            cell.style.backgroundColor = '#FFCCCC';
+        } else {
+            cell.style.backgroundColor = '#94C691';
+        }
+    });
+
+    localStorage.setItem('correlationCoefficientPolynomial', correlationCoefficientPolynomial);
+    localStorage.setItem('confidenceIntervalPolynomial', confidenceIntervalPolynomial);
+    localStorage.setItem('toleranceIntervalPolynomial', toleranceIntervalPolynomial);
+
+
+</script>
+
+<h3>Additional Calculations</h3>
+
+<table id="additional-table">
+    <thead>
+        <tr>
+            <th>Variable</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Correlation curve minimum point</td>
+            <td id="correlation-min-point"></td>
+        </tr>
+        <tr>
+            <td>Minimum allowable x value</td>
+            <td id="min-allowable-x"></td>
+        </tr>
+        <tr>
+            <td>Is correlation curve minimum &lt; minimum x value?</td>
+            <td id="is-min-curve-less"></td>
+        </tr>
+        <tr>
+            <td>Correlation curve maximum point</td>
+            <td id="correlation-max-point"></td>
+        </tr>
+        <tr>
+            <td>Extrapolation limit for x (125% of maximum x value)</td>
+            <td id="extrapolation-limit"></td>
+        </tr>
+        <tr>
+            <td>Is correlation curve maximum &gt; extrapolation limit?</td>
+            <td id="is-max-curve-greater"></td>
+        </tr>
+    </tbody>
+</table>
+<script>
+// Calculate Correlation curve minimum point
+const correlationMinPoint = (b2P > 0) ? (-b1 / (2 * b2P)).toFixed(4) : 'NA';
+
+// Calculate Minimum allowable x value
+const minAllowableX = (correlationMinPoint === 'NA') ? 'NA' : Math.min((-b1P / (2 * b2P)).toFixed(4), b2);
+
+// Calculate Is correlation curve minimum < minimum x value?
+const isMinCurveLess = (correlationMinPoint === 'NA') ? 'NA' : (correlationMinPoint < minAllowableX) ? 'Yes' : 'No';
+
+// Calculate Correlation curve maximum point
+const correlationMaxPoint = (b2P > 0) ? 'NA' : (-b1P / (2 * b2P)).toFixed(4);
+
+// Calculate Extrapolation limit for x (125% of maximum x value)
+let extrapolationLimit = 'NA'; // Initialize with 'NA'
+
+if (correlationMaxPoint !== 'NA') {
+    // Retrieve the largest x value from the test data page and assign it to extrapolationLimit
+    const xValuesJSON = localStorage.getItem('xValues'); // Retrieve x values from test data
+    const xValues = JSON.parse(xValuesJSON);
+    
+    if (xValues && xValues.length > 0) {
+        // Find the largest x value using the Math.max function
+        const largestXValueFromTestData = Math.max(...xValues);
+        extrapolationLimit = (1.25 * largestXValueFromTestData).toFixed(4);
+    }
+}
+// Calculate Is correlation curve maximum > extrapolation limit?
+const isMaxCurveGreater = (correlationMaxPoint === 'NA') ? 'NA' : (correlationMaxPoint > extrapolationLimit) ? 'No' : 'Yes';
+
+// Populate the values in the new table
+document.getElementById('correlation-min-point').textContent = correlationMinPoint;
+document.getElementById('min-allowable-x').textContent = minAllowableX;
+document.getElementById('is-min-curve-less').textContent = isMinCurveLess;
+document.getElementById('correlation-max-point').textContent = correlationMaxPoint;
+document.getElementById('extrapolation-limit').textContent = extrapolationLimit;
+document.getElementById('is-max-curve-greater').textContent = isMaxCurveGreater;
+
+        // Retrieve x and y values from localStorage
+        const xValuesJSON = localStorage.getItem('xValues');
+
+        if (xValuesJSON && yValuesJSON) {
+            const xValues = JSON.parse(xValuesJSON);
+            const yValues = JSON.parse(yValuesJSON);
+
+            // Your logarithmic sum calculation and chart creation here
+            const b0 = 1; // Replace with your actual calculation
+            const b1 = 2; // Replace with your actual calculation
+
+            // Ensure Chart is defined in the global scope
+            if (typeof Chart !== 'undefined') {
+                // Create the chart
+                const ctx = document.getElementById('chart').getContext('2d');
+                const chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: xValues.map(x => x.toString()),
+                        datasets: [
+                            {
+                                label: 'Actual Data',
+                                data: yValues,
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1,
+                                fill: false
+                            },
+                            {
+                                label: 'Fitted Data',
+                                data: yValues.map((y, i) => b0 + b1 * Math.log(xValues[i]) + 1),
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 1,
+                                fill: false
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+            } else {
+                console.error('Chart.js is not defined. Make sure you have loaded the Chart.js library.');
+            }
+        }
+
+        
+        localStorage.setItem('isMaxCurveGreater', isMaxCurveGreater);
+
+</script>
+
+</body>
+</html>
