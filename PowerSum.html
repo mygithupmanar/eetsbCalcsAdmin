@@ -60,7 +60,7 @@
            
         </ul>
     </div>
-    <h1>Power Summary</h1>
+    <h1>RESULTS OF POWER CORRELATION</h1>
 
     <table id="Power-Summary">
         <thead>
@@ -75,7 +75,15 @@
         </tbody>
     </table>
 
+
+    
     <h2>Chart</h2>
+
+    <div id="correlation-equation-box">
+        <h3>
+        </h3>
+    </div>
+    
     <div class="chart-container">
         <canvas id="chart"></canvas>
     </div>
@@ -123,6 +131,7 @@
         const SyPrime = Math.sqrt(syy / (n - 1));
         const r2 = 1 - Math.pow(SL, 2) / Math.pow(SyPrime, 2);
         const r = Math.sqrt(1 - Math.pow(SL, 2) / Math.pow(SyPrime, 2));
+
 
         // Calculate y~
         const yValuesJSON = localStorage.getItem('yValues');
@@ -243,14 +252,14 @@
             tableBody.innerHTML += newRow;
         }
 
+        // Update correlation equation above the chart with actual values of b0Po and b1Po
+const correlationEquationBox = document.getElementById('correlation-equation-box');
+const correlationEquation = `Correlation equation: y = ${b0Po.toFixed(4)}  x  ${b1Po.toFixed(4)}`;
+correlationEquationBox.querySelector('h3').textContent = correlationEquation;
 
         if (xValuesJSON && yValuesJSON) {
             const xValues = JSON.parse(xValuesJSON);
             const yValues = JSON.parse(yValuesJSON);
-
-            // Your logarithmic sum calculation and chart creation here
-            const b0 = 1; // Replace with your actual calculation
-            const b1 = 2; // Replace with your actual calculation
 
             // Ensure Chart is defined in the global scope
             if (typeof Chart !== 'undefined') {
@@ -268,18 +277,16 @@
                                 borderWidth: 1,
                                 fill: false
                             },
-                            {
-                                label: 'Fitted Data',
-                                data: yValues.map((y, i) => b0 + b1 * Math.log(xValues[i]) + 1),
-                                borderColor: 'rgba(255, 99, 132, 1)',
-                                borderWidth: 1,
-                                fill: false
-                            }
                         ]
                     },
                     options: {
                         responsive: true,
-                        maintainAspectRatio: false
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false,
+                            },
+                        }
                     }
                 });
             } else {
