@@ -62,7 +62,7 @@
         </ul>
     </div>
 
-    <h1>Linear Summary</h1>
+    <h1>RESULTS OF LINEAR CORRELATION</h1>
 
     <!-- Create a table to display the summary -->
     <table id="linear-summary-table">
@@ -80,6 +80,10 @@
 
     
     <h2>Chart</h2>
+    <div id="correlation-equation-box">
+        <h4>
+        </h4>
+    </div>
     <div class="chart-container">
         <canvas id="chart"></canvas>
     </div>
@@ -121,22 +125,21 @@
         const testDataJSON = localStorage.getItem('testData');
         const squaredYHatDifference = parseFloat(localStorage.getItem('squaredYHatDifference') || 0);
 
-
         function updateFieldValues() {
-        // Retrieve and display Facility, Location, Emission Unit, and Test Dates
-        if (testDataJSON) {
-            const testData = JSON.parse(testDataJSON);
+    // Retrieve and display Facility, Location, Emission Unit, and Test Dates
+    const testDataJSON = localStorage.getItem('fieldValues');
 
-            // Display Facility, Location, Emission Unit, and Test Dates
-            document.getElementById('facility-summary').textContent += testData.facility;
-            document.getElementById('location-summary').textContent += testData.location;
-            document.getElementById('emission-unit-summary').textContent += testData.emissionUnit;
-            document.getElementById('test-dates-summary').textContent += testData.testDates;
-            document.getElementById('emission-limit-summary').textContent += testData.emissionLimit;
-            
-        
-        }
+    if (testDataJSON) {
+        const fieldValues = JSON.parse(testDataJSON);
+
+        // Display Facility, Location, Emission Unit, Test Dates, and Emission Limit
+        document.getElementById('facility-summary').textContent = fieldValues['Facility'] || '';
+        document.getElementById('location-summary').textContent = fieldValues['Location'] || '';
+        document.getElementById('emission-unit-summary').textContent = fieldValues['Emission Unit'] || '';
+        document.getElementById('test-dates-summary').textContent = fieldValues['Test Dates'] || '';
+        document.getElementById('emission-limit-summary').textContent = fieldValues['Emission Limit'] || '';
     }
+}
 
 
         // Retrieve x and y values from localStorage
@@ -247,14 +250,16 @@
         const xValuesJSON = localStorage.getItem('xValues');
         const yValuesJSON = localStorage.getItem('yValues');
 
+        const correlationEquationBox = document.getElementById('correlation-equation-box');
+        const correlationEquation = `Correlation equation: y = ${b0Li.toFixed(4)}  +  ${b1Li.toFixed(4)} x`;
+        correlationEquationBox.querySelector('h4').textContent = correlationEquation;
+
+  
         if (xValuesJSON && yValuesJSON) {
             const xValues = JSON.parse(xValuesJSON);
             const yValues = JSON.parse(yValuesJSON);
 
-            // Your logarithmic sum calculation and chart creation here
-            const b0 = 1; // Replace with your actual calculation
-            const b1 = 2; // Replace with your actual calculation
-
+        
             // Ensure Chart is defined in the global scope
             if (typeof Chart !== 'undefined') {
                 // Create the chart
@@ -271,24 +276,23 @@
                                 borderWidth: 1,
                                 fill: false
                             },
-                            {
-                                label: 'Fitted Data',
-                                data: yValues.map((y, i) => b0 + b1 * Math.log(xValues[i]) + 1),
-                                borderColor: 'rgba(255, 99, 132, 1)',
-                                borderWidth: 1,
-                                fill: false
-                            }
                         ]
                     },
                     options: {
                         responsive: true,
-                        maintainAspectRatio: false
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false,
+                            },
+                        }
                     }
                 });
             } else {
                 console.error('Chart.js is not defined. Make sure you have loaded the Chart.js library.');
             }
         }
+
     
         // Call the function to generate the table when the page loads
         generateSummaryTable();
