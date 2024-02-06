@@ -14,7 +14,7 @@
     <div class="top-bar">
         <img class="logo" src="logo.png" alto="logo">
         <ul>
-            <li><a href="TestData.html">Test data</a></li>
+            <li><a href="TestDataClient.html">Test data</a></li>
             <li class="dropdown">
                 <a href="#">Linear</a>
                 <ul class="submenu">
@@ -63,382 +63,209 @@
            
         </ul>
     </div>
-
-
     <div class="container">
-        <h1>Correlation Test PM CEMS and reference method test data</h1>
-
-        <table id="data-table">
+        <h1>CORRELATION TEST PM CEMS AND REFERENCE METHOD TEST DATA</h1>
+        <div class="button-container">
+            <label for="file-upload-input">Upload Data File:</label>
+            <input type="file" id="file-upload-input" accept=".txt">
+            <button id="submit-button">Submit</button>
+        </div>
+        <table id="result-table">
             <thead>
                 <tr>
                     <th></th>
                     <th>PM CEMS Response</th>
                     <th>PM Concentrations</th>
-                    <th></th>
                 </tr>
-              <tr>
-                <th>No</th>
-                <th>X</th>
-                <th>Y</th>
-                <th>Action</th>
-              </tr>
+                <tr>
+                    <th>No</th>
+                    <th>X</th>
+                    <th>Y</th>
+                </tr>
             </thead>
             <tbody>
-              <!-- Rows will be added dynamically here -->
+                <!-- Rows will be added dynamically here -->
             </tbody>
-          </table>
-        
-          <div class="button-container">
-            <!-- Add an "Add Row" button -->
-            <button id="add-row">Add Row</button>
-            <!-- Add a "Convert to TXT" button -->
-            <button id="convert-to-txt-button">Convert to TXT</button>
-            <button id="calculate">Calculate</button>
-        </div>
-
-
-          <!-- Chart on the top right -->
+        </table>
+    </div>
     <div class="chart-container">
         <canvas id="chart"></canvas>
-        </div>
+    </div>
+ <table id="field-table">
+        <thead>
+            <tr>
+                <th>Field</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Field values will be added dynamically here -->
+        </tbody>
+    </table>
 
-        </div>
-
-
-        <table id="field-table">
-            <thead>
-                <tr>
-                    <th>Field</th>
-                    <th>Value</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Facility:</td>
-                    <td>PLTMG BIMA</td>
-                </tr>
-                <tr>
-                    <td>Location:</td>
-                    <td>BIMA</td>
-                </tr>
-                <tr>
-                    <td>Emission Unit:</td>
-                    <td>STACK 1</td>
-                </tr>
-                <tr>
-                    <td>Test Dates:</td>
-                    <td>7/1/2023</td>
-                </tr>
-                <tr>
-                    <td>Emission Limit:</td>
-                    <td>15 mg/acm</td>
-                </tr>
-            </tbody>
-        </table>            
-        
-
-
-
-      <script>
-  const dataTable = document.getElementById('data-table');
-  const tbody = dataTable.querySelector('tbody');
-  const addRowButton = document.getElementById('add-row');
-  let rowCount = 0;
-
-  // Function to add a new row
-  function addRow() {
-    rowCount++;
-    const newRow = `
-      <tr>
-        <td>${rowCount}</td>
-        <td><input type="text" name="x[]"></td>
-        <td><input type="text" name="y[]"></td>
-        <td><button class="delete-row">Delete</button></td>
-      </tr>
-    `;
-    tbody.innerHTML += newRow;
-  }
-
-  // Function to delete a row
-  function deleteRow(e) {
-    const row = e.target.closest('tr');
-    if (row) {
-      row.remove();
-      updateRowNumbers();
-    }
-  }
-
-  function deleteRow(e) {
-    // Use the confirm dialog to ask for confirmation
-    const confirmed = confirm("Are you sure you want to delete this row?");
-    if (confirmed) {
-      const row = e.target.closest('tr');
-      if (row) {
-        row.remove();
-        updateRowNumbers();
-      }
-    }
-  }
-
-  // Function to update row numbers
-  function updateRowNumbers() {
-    const rows = tbody.querySelectorAll('tr');
-    rowCount = 0;
-    rows.forEach((row, index) => {
-      rowCount++;
-      row.querySelector('td:first-child').textContent = rowCount;
-    });
-  }
-
-  // Event listeners
-  addRowButton.addEventListener('click', addRow);
-  tbody.addEventListener('click', (e) => {
-    if (e.target.classList.contains('delete-row')) {
-      deleteRow(e);
-    }
-  });
-</script>
-
-<script>
-    // Function to convert and download the entered data as a TXT file
-function convertToTXT() {
-    const dataRows = [];
-    const tableRows = document.querySelectorAll('#data-table tbody tr');
-
-    // Iterate through the table rows and extract the x and y values
-    tableRows.forEach((row) => {
-        const xInput = row.querySelector('input[name="x[]"]');
-        const yInput = row.querySelector('input[name="y[]"]');
-        if (xInput && yInput) {
-            const x = xInput.value;
-            const y = yInput.value;
-            dataRows.push(`${x}\t${y}`);
-        }
-    });
-
-    // Create a data string with the rows
-    const dataString = dataRows.join('\n');
-
-    // Create a Blob with the data
-    const blob = new Blob([dataString], { type: 'text/plain' });
-
-    // Create a URL for the Blob
-    const url = URL.createObjectURL(blob);
-
-    // Create an "a" element for downloading the file
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'data.txt';
-    a.style.display = 'none';
-
-    // Append the "a" element to the document and trigger the download
-    document.body.appendChild(a);
-    a.click();
-
-    // Remove the "a" element
-    document.body.removeChild(a);
-}
-
-// Event listener for the "Convert to TXT" button
-const convertToTXTButton = document.getElementById('convert-to-txt-button');
-convertToTXTButton.addEventListener('click', convertToTXT);
-
-</script>
-
-
-<script>
-        let myChart = null;
-        const calculateButton = document.getElementById('calculate');
+    <script>
+        const submitButton = document.getElementById('submit-button');
+        const resultTableBody = document.querySelector('#result-table tbody');
         const chartCanvas = document.getElementById('chart');
-        const xValues = [];
-        const yValues = [];
-      
-        calculateButton.addEventListener('click', () => {
-  // Get the values of x and y from the table
-  const xValues = [];
-  const yValues = [];
-  const tableRows = document.querySelectorAll('#data-table tbody tr');
-
-  tableRows.forEach((row) => {
-    const xInput = row.querySelector('input[name="x[]"]');
-    const yInput = row.querySelector('input[name="y[]"]');
-    if (xInput && yInput) {
-      xValues.push(parseFloat(xInput.value));
-      yValues.push(parseFloat(yInput.value));
-    }
-  });
-      
-  // Store x and y values in localStorage
-  localStorage.setItem('xValues', JSON.stringify(xValues));
-  localStorage.setItem('yValues', JSON.stringify(yValues));    
-      
-          // Create a chart using Chart.js
-          const ctx = chartCanvas.getContext('2d');
-          const data = {
-            labels: xValues,
-            datasets: [
-              {
+        const fieldTableBody = document.querySelector('#field-table tbody');
+        const ctx = chartCanvas.getContext('2d');
+    
+        function displayDataInTable(xValues, yValues) {
+            resultTableBody.innerHTML = '';
+    
+            for (let i = 0; i < xValues.length; i++) {
+                const rowNumber = i + 1;
+                const newRow = `
+                    <tr>
+                        <td>${rowNumber}</td>
+                        <td>${xValues[i]}</td>
+                        <td>${yValues[i]}</td>
+                    </tr>
+                `;
+                resultTableBody.innerHTML += newRow;
+            }
+        }
+    
+        function displayFieldTable(fieldValues) {
+            fieldTableBody.innerHTML = '';
+    
+            Object.entries(fieldValues).forEach(([field, value]) => {
+                const newRow = `
+                    <tr>
+                        <td>${field}</td>
+                        <td>${value}</td>
+                    </tr>
+                `;
+                fieldTableBody.innerHTML += newRow;
+            });
+        }
+    
+        function saveAndDisplayData(xValues, yValues, fieldValues) {
+            localStorage.setItem('xValues', JSON.stringify(xValues));
+            localStorage.setItem('yValues', JSON.stringify(yValues));
+            localStorage.setItem('fieldValues', JSON.stringify(fieldValues));
+    
+            displayDataInTable(xValues, yValues);
+            displayFieldTable(fieldValues);
+    
+            updateChart(xValues, yValues);
+        }
+    
+        function handleFileUpload(file) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                const fileContent = event.target.result;
+                const { xValues, yValues, fieldValues } = parseFileContent(fileContent);
+                saveAndDisplayData(xValues, yValues, fieldValues);
+            };
+            reader.readAsText(file);
+        }
+    
+        function parseFileContent(fileContent) {
+            const lines = fileContent.split('\n');
+            const xValues = [];
+            const yValues = [];
+            const fieldValues = {};
+    
+            // Parse the field values from the first row
+            const fieldRow = lines[0].trim().split('\t');
+            fieldValues['Facility'] = fieldRow[0] || '';
+            fieldValues['Location'] = fieldRow[1] || '';
+            fieldValues['Emission Unit'] = fieldRow[2] || '';
+            fieldValues['Test Dates'] = fieldRow[3] || '';
+            fieldValues['Emission Limit'] = fieldRow[4] || '';
+    
+            // Parse the x and y values
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].trim().split('\t');
+    
+                if (values.length === 2) {
+                    const xValue = parseFloat(values[0]);
+                    const yValue = parseFloat(values[1]);
+    
+                    if (!isNaN(xValue) && !isNaN(yValue)) {
+                        xValues.push(xValue);
+                        yValues.push(yValue);
+                    }
+                }
+            }
+    
+            return { xValues, yValues, fieldValues };
+        }
+    
+        function updateChart(xValues, yValues) {
+    const data = {
+        labels: xValues,
+        datasets: [
+            {
                 label: 'Y Values',
                 data: yValues,
-                borderColor: 'rgb(75, 192, 192)',
-                borderWidth: 2,
-                fill: false,
-              },
-            ],
-          };
-      
-        const config = {
-        type: 'line',
+                pointBackgroundColor: 'rgb(75, 192, 192)',
+                pointBorderColor: 'rgb(75, 192, 192)',
+                borderWidth: 0, // Set border width to 0 to hide the line
+            },
+        ],
+    };
+
+    const config = {
+        type: 'scatter', // Change type to 'scatter' for dots
         data: data,
         options: {
             scales: {
                 x: {
                     title: {
                         display: true,
-                        text: 'PM CEMS', // X-axis label
+                        text: 'X Values',
                     },
                 },
                 y: {
                     title: {
                         display: true,
-                        text: 'PM Concentration', // Y-axis label
+                        text: 'Y Values',
                     },
+                },
+            },
+            plugins: {
+                legend: {
+                    display: false, // Hide the legend
                 },
             },
         },
     };
-    // Destroy the existing chart if it exists
-    if (myChart) {
-        myChart.destroy();
+
+    if (window.myChart) {
+        window.myChart.destroy();
     }
-
-    // Create a new chart
-    myChart = new Chart(ctx, config);
-
-        });
-
-        
-
-         // Function to create or update the chart
-         function updateChart() {
-            // Get the values of x and y from the table and populate xValues and yValues arrays
-            const tableRows = document.querySelectorAll('#data-table tbody tr');
-            xValues.length = 0; // Clear existing data
-            yValues.length = 0; // Clear existing data
-
-            tableRows.forEach((row) => {
-                const xInput = row.querySelector('input[name="x[]"]');
-                const yInput = row.querySelector('input[name="y[]"]');
-                if (xInput && yInput) {
-                    xValues.push(parseFloat(xInput.value));
-                    yValues.push(parseFloat(yInput.value));
-                }
-            });
-
-            // Create a chart using Chart.js
-            const ctx = chartCanvas.getContext('2d');
-            const data = {
-                labels: xValues,
-                datasets: [
-                    {
-                        label: 'Y Values',
-                        data: yValues,
-                        borderColor: 'rgb(75, 192, 192)',
-                        borderWidth: 2,
-                        fill: false,
-                    },
-                ],
-            };
-
-            const config = {
-                type: 'line',
-                data: data,
-            };
-
-            // Destroy the existing chart if it exists
-            if (myChart) {
-                myChart.destroy();
+    window.myChart = new Chart(ctx, config);
+}
+    
+        function loadAndDisplayTable() {
+            const xValuesJSON = localStorage.getItem('xValues');
+            const yValuesJSON = localStorage.getItem('yValues');
+            const fieldValuesJSON = localStorage.getItem('fieldValues');
+    
+            if (xValuesJSON && yValuesJSON && fieldValuesJSON) {
+                const xValues = JSON.parse(xValuesJSON);
+                const yValues = JSON.parse(yValuesJSON);
+                const fieldValues = JSON.parse(fieldValuesJSON);
+    
+                displayDataInTable(xValues, yValues);
+                displayFieldTable(fieldValues);
+                updateChart(xValues, yValues);
             }
-
-            // Create a new chart
-            myChart = new Chart(ctx, config);
         }
-
-        tbody.addEventListener('click', (e) => {
-            if (e.target.classList.contains('delete-row')) {
-                deleteRow(e);
-                updateChart(); // Call the function to update the chart after deleting a row
+    
+        loadAndDisplayTable();
+    
+        submitButton.addEventListener('click', () => {
+            const fileUploadInput = document.getElementById('file-upload-input');
+            const file = fileUploadInput.files[0];
+            if (file) {
+                handleFileUpload(file);
             }
         });
-
-        // Initialize the chart
-        updateChart();
-      </script>
-
-<!-- Add a Save button for the fields and data table -->
-<button id="save-data-button">Save Data</button>
-
-<script>
-    // Function to handle saving data table values
-    function saveDataTable() {
-        const xValues = [];
-        const yValues = [];
-        const tableRows = document.querySelectorAll('#data-table tbody tr');
-
-        tableRows.forEach((row) => {
-            const xInput = row.querySelector('input[name="x[]"]');
-            const yInput = row.querySelector('input[name="y[]"]');
-            if (xInput && yInput) {
-                xValues.push(parseFloat(xInput.value));
-                yValues.push(parseFloat(yInput.value));
-            }
-        });
-
-        // Save x and y values in localStorage
-        localStorage.setItem('xValues', JSON.stringify(xValues));
-        localStorage.setItem('yValues', JSON.stringify(yValues));
-    }
-
-    // Add an event listener to the Save Table Data button
-    const saveDataButton = document.getElementById('save-data-button');
-    saveDataButton.addEventListener('click', () => {
-        saveDataTable(); // Call the function to save data table values
-        updateChart(); // Call the function to update and save the chart
-    });
-
-    // Load saved data table values when the page loads
-    function loadDataValues() {
-        const xValuesJSON = localStorage.getItem('xValues');
-        const yValuesJSON = localStorage.getItem('yValues');
-        if (xValuesJSON && yValuesJSON) {
-            const xValues = JSON.parse(xValuesJSON);
-            const yValues = JSON.parse(yValuesJSON);
-
-            // Clear existing rows
-            tbody.innerHTML = '';
-
-            // Repopulate the data table with saved values
-            for (let i = 0; i < xValues.length; i++) {
-                rowCount++;
-                const newRow = `
-                    <tr>
-                        <td>${rowCount}</td>
-                        <td><input type="text" name="x[]" value="${xValues[i]}"></td>
-                        <td><input type="text" name="y[]" value="${yValues[i]}"></td>
-                        <td><button class="delete-row">Delete</button></td>
-                    </tr>
-                `;
-                tbody.innerHTML += newRow;
-            }
-
-            updateChart(); // Update the chart with loaded values
-        }
-    }
-
-    // Call the function to load saved values when the page loads
-    loadDataValues();
-</script>
-
+    </script>
+    
 </body>
-</html>
 
+</html>
