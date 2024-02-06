@@ -59,7 +59,7 @@
         </ul>
     </div>
 
-    <h1>Logarithmic Summary</h1>
+    <h1>RESULTS OF LOGARITHMIC CORRELATION</h1>
 
     <table id="logarithmic-summary-table">
         <thead>
@@ -75,6 +75,10 @@
     </table>
 
     <h2>Chart</h2>
+    <div id="correlation-equation-box">
+        <h4>
+        </h4>
+    </div>
     <div class="chart-container">
         <canvas id="chart"></canvas>
     </div>
@@ -138,6 +142,7 @@
                 tableBody.innerHTML += newRow;
             }
 
+
             addRow('n', 'n', n);
             addRow("x'~", "x'~ = mean of x`", xMean);
             addRow("Sx'x'", "Sx'x' = Sum((x'i-x'~)^2)", sxx);
@@ -163,15 +168,17 @@
             addRow("r", "r = SQRT((1-SL^2/Sy^2))", r);
 
             
-            
+        
+            const correlationEquationBox = document.getElementById('correlation-equation-box');
+        const correlationEquation = `Correlation equation: y = ${b0Lo.toFixed(4)}  +  ${b1Lo.toFixed(4)} L(nx)`;
+        correlationEquationBox.querySelector('h4').textContent = correlationEquation;
+
+
         if (xValuesJSON && yValuesJSON) {
             const xValues = JSON.parse(xValuesJSON);
             const yValues = JSON.parse(yValuesJSON);
 
-            // Your logarithmic sum calculation and chart creation here
-            const b0 = 1; // Replace with your actual calculation
-            const b1 = 2; // Replace with your actual calculation
-
+        
             // Ensure Chart is defined in the global scope
             if (typeof Chart !== 'undefined') {
                 // Create the chart
@@ -188,18 +195,16 @@
                                 borderWidth: 1,
                                 fill: false
                             },
-                            {
-                                label: 'Fitted Data',
-                                data: yValues.map((y, i) => b0 + b1 * Math.log(xValues[i]) + 1),
-                                borderColor: 'rgba(255, 99, 132, 1)',
-                                borderWidth: 1,
-                                fill: false
-                            }
                         ]
                     },
                     options: {
                         responsive: true,
-                        maintainAspectRatio: false
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false,
+                            },
+                        }
                     }
                 });
             } else {
